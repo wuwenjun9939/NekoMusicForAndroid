@@ -6,12 +6,27 @@
 -dontwarn org.slf4j.impl.StaticLoggerBinder
 
 # Kotlin optimization
--optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
--optimizationpasses 5
+-optimizationpasses 7
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
 -dontpreverify
--verbose
+
+# Aggressive optimizations
+-allowaccessmodification
+-mergeinterfacesaggressively
+-repackageclasses ''
+
+# Keep rules
+-keep class * extends java.lang.annotation.Annotation
+-keep class * implements java.io.Serializable
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
 
 # Kotlin
 -keepattributes Signature

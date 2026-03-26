@@ -26,6 +26,9 @@ android {
         ndk {
             abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a"))
         }
+        
+        // 启用增量编译
+        buildConfigField("boolean", "ENABLE_DEBUG", "false")
     }
 
     signingConfigs {
@@ -47,7 +50,22 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("debug")
+            
+            // 启用更严格的优化
+            isDebuggable = false
+            isJniDebuggable = false
+            renderscriptOptimLevel = 3
         }
+    }
+    
+    // R8配置
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     
     // 配置打包选项
