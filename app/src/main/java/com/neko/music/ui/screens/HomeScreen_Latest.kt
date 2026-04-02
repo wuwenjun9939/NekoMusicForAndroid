@@ -15,12 +15,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.neko.music.R
 import com.neko.music.ui.theme.Lilac
 import com.neko.music.ui.theme.RoseRed
 import com.neko.music.ui.theme.SkyBlue
@@ -130,7 +132,7 @@ fun LatestMusicCard(
         
         // 描述
         Text(
-            text = "最新上传的歌曲",
+            text = stringResource(id = R.string.latest_songs),
             fontSize = 12.sp,
             color = SkyBlue.copy(alpha = 0.7f),
             maxLines = 1,

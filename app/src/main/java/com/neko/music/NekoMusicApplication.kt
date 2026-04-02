@@ -2,9 +2,12 @@ package com.neko.music
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.content.res.Configuration
+import android.os.Build
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import java.io.File
+import java.util.Locale
 
 class NekoMusicApplication : Application(), ImageLoaderFactory {
     
@@ -14,8 +17,46 @@ class NekoMusicApplication : Application(), ImageLoaderFactory {
         super.onCreate()
         prefs = getSharedPreferences("app_update", MODE_PRIVATE)
         
+        // 应用语言设置
+        applyLanguage()
+        
         // 检查版本号是否变化，如果变化了说明更新成功，删除更新文件
         checkAndCleanupUpdateFiles()
+    }
+    
+    /**
+     * 应用语言设置
+     */
+    private fun applyLanguage() {
+        val languagePrefs = getSharedPreferences("app_settings", MODE_PRIVATE)
+        val language = languagePrefs.getString("language", "system") ?: "system"
+        
+        val config = resources.configuration
+        val locale = when (language) {
+            "zh" -> Locale.SIMPLIFIED_CHINESE
+            "en" -> Locale.ENGLISH
+            else -> Locale.getDefault() // 跟随系统
+        }
+        
+        Locale.setDefault(locale)
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocale(locale)
+            createConfigurationContext(config)
+        } else {
+            @Suppress("DEPRECATION")
+            config.locale = locale
+            @Suppress("DEPRECATION")
+            resources.updateConfiguration(config, resources.displayMetrics)
+        }
+    }
+    
+    /**
+     * 重写onConfigurationChanged以在配置更改时重新应用语言
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        applyLanguage()
     }
     
     private fun checkAndCleanupUpdateFiles() {

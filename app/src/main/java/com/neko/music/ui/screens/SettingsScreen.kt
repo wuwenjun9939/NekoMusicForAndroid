@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -85,6 +86,11 @@ fun SettingsScreen(
     // 焦点锁定设置
     val focusLockPrefs = remember { context.getSharedPreferences("player_prefs", Context.MODE_PRIVATE) }
     var isFocusLockEnabled by remember { mutableStateOf(focusLockPrefs.getBoolean("focus_lock_enabled", false)) }
+    
+    // 语言设置
+    val languagePrefs = remember { context.getSharedPreferences("app_settings", Context.MODE_PRIVATE) }
+    var currentLanguage by remember { mutableStateOf(languagePrefs.getString("language", "system") ?: "system") }
+    var showLanguageDialog by remember { mutableStateOf(false) }
     
     // 悬浮窗权限检查
     var hasOverlayPermission by remember {
@@ -182,7 +188,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        "设置",
+                        stringResource(id = R.string.settings),
                         color = if (isSystemInDarkTheme()) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
                     )
                 },
@@ -238,14 +244,14 @@ fun SettingsScreen(
                         ) {
                             Column {
                                 Text(
-                                    text = "Neko云音乐",
+                                    text = stringResource(id = R.string.app_name),
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = if (isSystemInDarkTheme()) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = "版本 $versionName ($versionCode)",
+                                    text = "${stringResource(id = R.string.version)} $versionName ($versionCode)",
                                     fontSize = 14.sp,
                                     color = if (isSystemInDarkTheme()) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                                 )
@@ -277,11 +283,11 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SettingSection(title = "通用") {
+                SettingSection(title = stringResource(id = R.string.general)) {
                     SettingSwitchItem(
                         icon = Icons.Default.Info,
-                        title = "是否缓存",
-                        subtitle = "开启后可缓存音乐以便离线播放",
+                        title = stringResource(id = R.string.cache_enabled),
+                        subtitle = stringResource(id = R.string.cache_enabled_subtitle),
                         checked = isCacheEnabled,
                         onCheckedChange = { enabled ->
                             isCacheEnabled = enabled
@@ -292,16 +298,16 @@ fun SettingsScreen(
                     if (isCacheEnabled) {
                         SettingItem(
                             icon = Icons.Default.Info,
-                            title = "缓存管理",
-                            subtitle = "已缓存 $cachedMusicCount 首歌曲 ($cacheSize)",
+                            title = stringResource(id = R.string.cache_management),
+                            subtitle = stringResource(id = R.string.cached_songs, cachedMusicCount, cacheSize),
                             onClick = { onNavigateToCache() }
                         )
                     }
                     
                     SettingSwitchItem(
                         icon = Icons.Default.Info,
-                        title = "焦点锁定",
-                        subtitle = "开启后不会被其他应用打断播放，可同时播放",
+                        title = stringResource(id = R.string.focus_lock),
+                        subtitle = stringResource(id = R.string.focus_lock_subtitle),
                         checked = isFocusLockEnabled,
                         onCheckedChange = { enabled ->
                             isFocusLockEnabled = enabled
@@ -312,6 +318,13 @@ fun SettingsScreen(
                             playerManager.updateAudioAttributes(enabled)
                         }
                     )
+                    
+                    SettingItem(
+                        icon = Icons.Default.Info,
+                        title = stringResource(id = R.string.language),
+                        subtitle = getLanguageDisplayName(currentLanguage),
+                        onClick = { showLanguageDialog = true }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -319,8 +332,8 @@ fun SettingsScreen(
                 SettingSection(title = "FuckChinaOS") {
                     SettingSwitchItem(
                         icon = Icons.Default.Info,
-                        title = "灵动岛",
-                        subtitle = "在顶部状态栏中央显示播放控制。操你妈国产系统",
+                        title = stringResource(id = R.string.fuck_china_os),
+                        subtitle = stringResource(id = R.string.fuck_china_os_subtitle),
                         checked = isFuckChinaOSEnabled,
                         onCheckedChange = { enabled ->
                             // 如果开启但没有权限，先请求权限（开关状态不变，等用户授权后手动开启）
@@ -379,6 +392,22 @@ fun SettingsScreen(
                 SettingsUpdateErrorDialog(
                     message = errorMessage,
                     onDismiss = { showUpdateErrorDialog = false }
+                )
+            }
+            
+            // 语言选择对话框
+            if (showLanguageDialog) {
+                LanguageSelectionDialog(
+                    currentLanguage = currentLanguage,
+                    onDismiss = { showLanguageDialog = false },
+                    onLanguageSelected = { languageCode ->
+                        currentLanguage = languageCode
+                        languagePrefs.edit().putString("language", languageCode).apply()
+                        // 重新创建Activity以应用语言更改，保持在当前页面
+                        if (context is android.app.Activity) {
+                            context.recreate()
+                        }
+                    }
                 )
             }
             
@@ -783,5 +812,83 @@ fun SettingSwitchItem(
             kotlinx.coroutines.delay(100)
             isPressed = false
         }
+    }
+}
+
+@Composable
+fun LanguageSelectionDialog(
+    currentLanguage: String,
+    onDismiss: () -> Unit,
+    onLanguageSelected: (String) -> Unit
+) {
+    val isDarkTheme = isSystemInDarkTheme()
+    val languages = listOf(
+        "system" to stringResource(id = R.string.language_follow_system),
+        "zh" to stringResource(id = R.string.language_zh),
+        "en" to stringResource(id = R.string.language_en)
+    )
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(id = R.string.language),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = RoseRed
+            )
+        },
+        text = {
+            Column {
+                languages.forEach { (code, name) ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onLanguageSelected(code)
+                                onDismiss()
+                            }
+                            .padding(vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = currentLanguage == code,
+                            onClick = {
+                                onLanguageSelected(code)
+                                onDismiss()
+                            },
+                            colors = RadioButtonDefaults.colors(
+                                selectedColor = RoseRed
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            text = name,
+                            fontSize = 16.sp,
+                            color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(
+                    text = stringResource(id = R.string.cancel),
+                    fontSize = 16.sp,
+                    color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
+                )
+            }
+        },
+        containerColor = if (isDarkTheme) Color(0xFF1A1A2E).copy(alpha = 0.95f) else Color.White
+    )
+}
+
+fun getLanguageDisplayName(language: String): String {
+    return when (language) {
+        "system" -> "跟随系统"
+        "zh" -> "简体中文"
+        "en" -> "English"
+        else -> "跟随系统"
     }
 }

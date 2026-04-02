@@ -32,6 +32,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +43,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
+import com.neko.music.R
 import com.neko.music.data.model.Music
 import com.neko.music.service.MusicPlayerManager
 import com.neko.music.ui.theme.RoseRed
@@ -108,7 +110,7 @@ fun RecentPlayScreen(
             }
             
             Text(
-                text = "最近播放",
+                text = stringResource(id = R.string.recent_play),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black

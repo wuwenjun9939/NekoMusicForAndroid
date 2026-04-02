@@ -103,6 +103,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        // 应用语言设置
+        applyLanguage()
+
         // 检查是否是首次启动
         val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val isFirstLaunch = prefs.getBoolean(KEY_FIRST_LAUNCH, true)
@@ -130,6 +133,33 @@ class MainActivity : ComponentActivity() {
                     MainScreen()
                 }
             }
+        }
+    }
+    
+    /**
+     * 应用语言设置
+     */
+    private fun applyLanguage() {
+        val languagePrefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        val language = languagePrefs.getString("language", "system") ?: "system"
+        
+        val config = resources.configuration
+        val locale = when (language) {
+            "zh" -> java.util.Locale.SIMPLIFIED_CHINESE
+            "en" -> java.util.Locale.ENGLISH
+            else -> java.util.Locale.getDefault() // 跟随系统
+        }
+        
+        java.util.Locale.setDefault(locale)
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            config.setLocale(locale)
+            createConfigurationContext(config)
+        } else {
+            @Suppress("DEPRECATION")
+            config.locale = locale
+            @Suppress("DEPRECATION")
+            resources.updateConfiguration(config, resources.displayMetrics)
         }
     }
 

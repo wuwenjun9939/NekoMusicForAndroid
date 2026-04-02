@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -69,6 +70,9 @@ fun MyPlaylistsScreen(
     val tokenManager = remember { TokenManager(context) }
     val playlistApi = remember { PlaylistApi(tokenManager.getToken(), context) }
     val favoriteApi = remember { FavoriteApi(context) }
+    
+    // 预加载字符串资源
+    val pleaseLoginFirst = stringResource(id = R.string.please_login_first)
     
     // 歌单数据
     var playlists by remember { mutableStateOf<List<Playlist>>(emptyList()) }
@@ -392,7 +396,7 @@ fun MyPlaylistsScreen(
                     .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
             ) {
                 Text(
-                    text = "我的歌单",
+                    text = stringResource(id = R.string.my_playlists),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -520,7 +524,7 @@ fun MyPlaylistsScreen(
                                         dialogPlaylistName = ""
                                         showCreateDialog = true
                                     } else {
-                                        Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(context, pleaseLoginFirst, Toast.LENGTH_SHORT).show()
                                     }
                                 },
                             colors = CardDefaults.cardColors(

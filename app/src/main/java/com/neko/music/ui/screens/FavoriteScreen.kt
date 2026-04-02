@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,6 +48,9 @@ fun FavoriteScreen(
 
     val isLoggedIn = tokenManager.isLoggedIn()
 
+    // 预加载字符串资源
+    val getFavoritesFailed = stringResource(id = R.string.get_favorites_failed)
+
     LaunchedEffect(Unit) {
         if (isLoggedIn) {
             isLoading = true
@@ -57,7 +61,7 @@ fun FavoriteScreen(
                     if (response.success) {
                         favorites = response.favorites
                     } else {
-                        errorMessage = "获取收藏列表失败"
+                        errorMessage = getFavoritesFailed
                     }
                 } catch (e: Exception) {
                     errorMessage = "网络错误: ${e.message}"
@@ -146,10 +150,10 @@ fun FavoriteScreen(
             topBar = {
                 Column {
                     TopAppBar(
-                        title = { Text("我的收藏") },
+                        title = { Text(stringResource(id = R.string.my_favorites)) },
                         navigationIcon = {
                             IconButton(onClick = onBackClick) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "返回")
+                                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                             }
                         }
                     )
@@ -180,14 +184,14 @@ fun FavoriteScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = "请先登录",
+                                text = stringResource(id = R.string.please_login_first),
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "登录后可以查看和管理您的收藏",
+                                text = stringResource(id = R.string.login_after_view),
                                 fontSize = 14.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -220,7 +224,7 @@ fun FavoriteScreen(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = if (searchQuery.isEmpty()) "暂无收藏" else "未找到相关歌曲",
+                                text = if (searchQuery.isEmpty()) stringResource(id = R.string.no_favorites) else stringResource(id = R.string.no_search_results),
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Gray

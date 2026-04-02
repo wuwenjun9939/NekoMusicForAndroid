@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -265,7 +266,7 @@ fun MineHeader(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = if (isLoggedIn && username != null) username else "未登录",
+                text = if (isLoggedIn && username != null) username else stringResource(id = R.string.not_logged_in),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFFF6B6B)
@@ -324,7 +325,7 @@ fun MineStats(onUploadClick: () -> Unit = {}, token: String? = null) {
             .padding(20.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        StatItem(uploadCount.toString(), "上传", onUploadClick = onUploadClick)
+        StatItem(uploadCount.toString(), stringResource(id = R.string.upload), onUploadClick = onUploadClick)
     }
 }
 
@@ -431,7 +432,7 @@ fun MineMenu(
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = "我的",
+            text = stringResource(id = R.string.mine),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
@@ -439,9 +440,8 @@ fun MineMenu(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        MenuItem("我的音乐", R.drawable.music, RoseRed)
-        MenuItem("我的收藏", R.drawable.ic_favorite_filled, SakuraPink, onClick = onFavoriteClick)
-        MenuItem("最近播放", R.drawable.recently_played, SkyBlue, onClick = onRecentPlayClick)
+        MenuItem(stringResource(id = R.string.my_favorites), R.drawable.ic_favorite_filled, SakuraPink, onClick = onFavoriteClick)
+        MenuItem(stringResource(id = R.string.recent_play), R.drawable.recently_played, SkyBlue, onClick = onRecentPlayClick)
     }
 }
 
@@ -526,22 +526,22 @@ fun MoreSettings(
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = "设置",
+            text = stringResource(id = R.string.settings_title),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
         )
         
         Spacer(modifier = Modifier.height(16.dp))
-        MenuItem("设置", R.drawable.setting, RoseRed, onClick = onNavigateToSettings)
-        MenuItem("关于我们", R.drawable.about, StarYellow, onClick = onAboutClick)
+        MenuItem(stringResource(id = R.string.settings_title), R.drawable.setting, RoseRed, onClick = onNavigateToSettings)
+        MenuItem(stringResource(id = R.string.about_us), R.drawable.about, StarYellow, onClick = onAboutClick)
         
         Spacer(modifier = Modifier.height(16.dp))
         
         if (isLoggedIn) {
-            MenuItem("退出登录", R.drawable.logout, Lilac, onClick = onLogoutClick)
+            MenuItem(stringResource(id = R.string.logout), R.drawable.logout, Lilac, onClick = onLogoutClick)
         } else {
-            MenuItem("登录", R.drawable.login, Peach, onClick = onLoginClick)
+            MenuItem(stringResource(id = R.string.login), R.drawable.login, Peach, onClick = onLoginClick)
         }
     }
     
@@ -553,17 +553,90 @@ fun MoreSettings(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(12.dp))
+        
+        // API文档和GitHub链接
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            ExternalLinkButton(
+                text = stringResource(id = R.string.api_docs),
+                url = "https://github.com/NyaNyagulugulu/NekoMusicDocs",
+                icon = R.drawable.about
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            ExternalLinkButton(
+                text = stringResource(id = R.string.github_repo),
+                url = "https://github.com/FantasyNetworkCN/NekoMusicForAndroid",
+                icon = R.drawable.about
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
         Text(
-            text = "蜀ICP备2025177767号-1 如有侵权请联系support@cnmsb.xin",
+            text = stringResource(id = R.string.footer_icp),
             fontSize = 10.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "© 2025-2026 Fantasy Network「梦幻网络」 保留所有权利.",
+            text = stringResource(id = R.string.footer_copyright),
             fontSize = 10.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun ExternalLinkButton(
+    text: String,
+    url: String,
+    icon: Int
+) {
+    val context = LocalContext.current
+    var isPressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+    
+    Row(
+        modifier = Modifier
+            .scale(scale)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .shadow(
+                elevation = 2.dp,
+                spotColor = RoseRed.copy(alpha = 0.15f),
+                ambientColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.08f)
+            )
+            .clickable {
+                isPressed = true
+                val intent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(url))
+                context.startActivity(intent)
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = text,
+            modifier = Modifier.size(16.dp),
+            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(RoseRed)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = text,
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Medium
         )
     }
 }

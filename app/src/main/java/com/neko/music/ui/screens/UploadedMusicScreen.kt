@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
@@ -57,6 +58,9 @@ fun UploadedMusicScreen(
     var showError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
+    // 预加载字符串资源
+    val pleaseLoginFirst = stringResource(id = R.string.please_login_first)
+
     LaunchedEffect(token) {
         if (token != null) {
             isLoading = true
@@ -80,7 +84,7 @@ fun UploadedMusicScreen(
             }
         } else {
             showError = true
-            errorMessage = "请先登录"
+            errorMessage = pleaseLoginFirst
             isLoading = false
         }
     }
@@ -90,7 +94,7 @@ fun UploadedMusicScreen(
             TopAppBar(
                 title = {
                     Text(
-                        "我的上传",
+                        stringResource(id = R.string.my_uploads),
                         color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
@@ -226,13 +230,13 @@ fun EmptyView() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "还没有上传的音乐",
+                text = stringResource(id = R.string.no_uploaded_music),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 16.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "上传的音乐审核通过后会显示在这里",
+                text = stringResource(id = R.string.uploaded_music_pending),
                 color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
