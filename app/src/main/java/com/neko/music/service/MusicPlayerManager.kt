@@ -182,6 +182,29 @@ class MusicPlayerManager private constructor(context: Context) {
         Log.d("MusicPlayerManager", "播放速度设置为: $speed")
     }
 
+    /**
+     * 更新音频属性，根据焦点锁定状态设置是否处理音频焦点
+     * @param focusLockEnabled 是否启用焦点锁定
+     */
+    fun updateAudioAttributes(focusLockEnabled: Boolean) {
+        if (isReleased) {
+            Log.w("MusicPlayerManager", "ExoPlayer 已释放，忽略 updateAudioAttributes 操作")
+            return
+        }
+
+        val handleAudioFocus = !focusLockEnabled
+        Log.d("MusicPlayerManager", "更新音频属性: 焦点锁定=$focusLockEnabled, 处理音频焦点=$handleAudioFocus")
+
+        // 设置音频属性
+        player.setAudioAttributes(
+            com.google.android.exoplayer2.audio.AudioAttributes.Builder()
+                .setContentType(com.google.android.exoplayer2.C.AUDIO_CONTENT_TYPE_MUSIC)
+                .setUsage(com.google.android.exoplayer2.C.USAGE_MEDIA)
+                .build(),
+            handleAudioFocus
+        )
+    }
+
     private var sleepTimerJob: kotlinx.coroutines.Job? = null
     private var sleepTimerEndTime: Long = 0
 

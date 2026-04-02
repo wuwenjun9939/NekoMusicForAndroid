@@ -82,6 +82,10 @@ fun SettingsScreen(
     val floatPrefs = remember { context.getSharedPreferences("float_window", Context.MODE_PRIVATE) }
     var isFuckChinaOSEnabled by remember { mutableStateOf(floatPrefs.getBoolean("fuck_china_os_enabled", false)) }
     
+    // 焦点锁定设置
+    val focusLockPrefs = remember { context.getSharedPreferences("player_prefs", Context.MODE_PRIVATE) }
+    var isFocusLockEnabled by remember { mutableStateOf(focusLockPrefs.getBoolean("focus_lock_enabled", false)) }
+    
     // 悬浮窗权限检查
     var hasOverlayPermission by remember {
         mutableStateOf(
@@ -293,6 +297,21 @@ fun SettingsScreen(
                             onClick = { onNavigateToCache() }
                         )
                     }
+                    
+                    SettingSwitchItem(
+                        icon = Icons.Default.Info,
+                        title = "焦点锁定",
+                        subtitle = "开启后不会被其他应用打断播放，可同时播放",
+                        checked = isFocusLockEnabled,
+                        onCheckedChange = { enabled ->
+                            isFocusLockEnabled = enabled
+                            focusLockPrefs.edit().putBoolean("focus_lock_enabled", enabled).apply()
+                            
+                            // 通知MusicPlayerManager重新应用音频属性
+                            val playerManager = com.neko.music.service.MusicPlayerManager.getInstance(context)
+                            playerManager.updateAudioAttributes(enabled)
+                        }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

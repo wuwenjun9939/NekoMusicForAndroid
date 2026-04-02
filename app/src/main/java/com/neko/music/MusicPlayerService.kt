@@ -39,6 +39,11 @@ class MusicPlayerService : Service() {
         // 确保 MediaSession 已初始化
         playerManager.ensureMediaSessionInitialized(this)
 
+        // 初始化焦点锁定状态
+        val focusLockPrefs = getSharedPreferences("player_prefs", Context.MODE_PRIVATE)
+        val focusLockEnabled = focusLockPrefs.getBoolean("focus_lock_enabled", false)
+        playerManager.updateAudioAttributes(focusLockEnabled)
+
         // 启动前台服务以确保后台播放正常
         startForeground(NOTIFICATION_ID, createMusicNotification())
 
