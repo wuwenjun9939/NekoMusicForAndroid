@@ -362,7 +362,7 @@ fun SettingsScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(80.dp))
+                Spacer(modifier = Modifier.height(150.dp))
             }
 
             // 更新对话框

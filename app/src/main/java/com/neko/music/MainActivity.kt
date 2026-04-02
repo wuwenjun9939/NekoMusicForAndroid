@@ -151,16 +151,13 @@ class MainActivity : ComponentActivity() {
         }
         
         java.util.Locale.setDefault(locale)
+        config.setLocale(locale)
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            config.setLocale(locale)
-            createConfigurationContext(config)
-        } else {
-            @Suppress("DEPRECATION")
-            config.locale = locale
-            @Suppress("DEPRECATION")
-            resources.updateConfiguration(config, resources.displayMetrics)
-        }
+        // 更新resources的configuration
+        resources.updateConfiguration(config, resources.displayMetrics)
+        
+        // 创建新的Configuration Context
+        createConfigurationContext(config)
     }
 
     
