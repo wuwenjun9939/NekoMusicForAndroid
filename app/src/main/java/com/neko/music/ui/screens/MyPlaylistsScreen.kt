@@ -73,6 +73,8 @@ fun MyPlaylistsScreen(
     
     // 预加载字符串资源
     val pleaseLoginFirst = stringResource(id = R.string.please_login_first)
+    val myFavoritesLabel = stringResource(id = R.string.my_favorites_label)
+    val loadingFailed = stringResource(id = R.string.loading_failed)
     
     // 歌单数据
     var playlists by remember { mutableStateOf<List<Playlist>>(emptyList()) }
@@ -185,7 +187,7 @@ fun MyPlaylistsScreen(
             }
         } catch (e: Exception) {
             Log.e("MyPlaylistsScreen", "初始化失败", e)
-            errorMessage = "加载失败: ${e.message}"
+            errorMessage = "$loadingFailed: ${e.message ?: ""}"
             showError = true
         } finally {
             isLoading = false
@@ -290,7 +292,7 @@ fun MyPlaylistsScreen(
     // 获取完整的歌单列表
     val allPlaylists = remember(playlists, favoritePlaylists, favoritesCount) {
         listOf(
-            Playlist(0, "我喜欢的音乐", favoritesCount, 1, "2026-01-15", null, null, null)
+            Playlist(0, myFavoritesLabel, favoritesCount, 1, "2026-01-15", null, null, null)
         ) + playlists + favoritePlaylists
     }
     
@@ -426,7 +428,7 @@ fun MyPlaylistsScreen(
                             modifier = Modifier.size(64.dp)
                         )
                         Text(
-                            text = "还没有歌单",
+                            text = stringResource(id = R.string.no_playlists_yet),
                             fontSize = 18.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium
@@ -553,7 +555,7 @@ fun MyPlaylistsScreen(
                                         tint = RoseRed
                                     )
                                     Text(
-                                        text = "创建新歌单",
+                                        text = stringResource(id = R.string.create_new_playlist),
                                         fontSize = 16.sp,
                                         color = if (isSystemInDarkTheme()) {
                                             RoseRed.copy(alpha = 0.9f)
@@ -575,7 +577,7 @@ fun MyPlaylistsScreen(
         // 创建/编辑歌单对话框
         if (showCreateDialog) {
             PlaylistDialog(
-                title = if (editingPlaylist != null) "编辑歌单" else "创建歌单",
+                title = if (editingPlaylist != null) stringResource(id = R.string.edit_playlist) else stringResource(id = R.string.create_playlist_dialog),
                 playlistName = dialogPlaylistName,
                 onNameChange = { dialogPlaylistName = it },
                 onConfirm = { createOrUpdatePlaylist() },
@@ -634,6 +636,12 @@ fun PlaylistItem(
     onDelete: () -> Unit,
     onClick: () -> Unit = {}
 ) {
+    // Preload strings
+    val coverText = stringResource(id = R.string.content_description_cover)
+    val songsCountLabelText = stringResource(id = R.string.songs_count_label, playlist.musicCount)
+    val editText = stringResource(id = R.string.edit_playlist)
+    val deleteText = stringResource(id = R.string.delete)
+    
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.98f else 1f,
@@ -716,7 +724,7 @@ fun PlaylistItem(
             // 始终显示图片（封面或默认头像）
             androidx.compose.foundation.Image(
                 painter = rememberAsyncImagePainter(coverUrl),
-                contentDescription = "封面",
+                contentDescription = coverText,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
@@ -741,7 +749,7 @@ fun PlaylistItem(
             )
             Spacer(modifier = Modifier.height(1.dp))
             Text(
-                text = "${playlist.musicCount} 首歌曲",
+                text = songsCountLabelText,
                 fontSize = 14.sp,
                 color = if (isDarkTheme) {
                     Color(0xFFB8B8D1).copy(alpha = 0.8f)
@@ -765,7 +773,7 @@ fun PlaylistItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Create,
-                        contentDescription = "编辑",
+                        contentDescription = editText,
                         tint = if (isDarkTheme) {
                             RoseRed.copy(alpha = 0.9f)
                         } else {
@@ -782,7 +790,7 @@ fun PlaylistItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "删除",
+                        contentDescription = deleteText,
                         tint = if (isDarkTheme) {
                             Color(0xFFB8B8D1).copy(alpha = 0.8f)
                         } else {
@@ -803,6 +811,11 @@ fun PlaylistDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    // Preload strings
+    val playlistNameText = stringResource(id = R.string.playlist_name)
+    val cancelText = stringResource(id = R.string.cancel)
+    val confirmText = stringResource(id = R.string.confirm)
+    
     val isDarkTheme = isSystemInDarkTheme()
     
     Dialog(
@@ -845,7 +858,7 @@ fun PlaylistDialog(
                 OutlinedTextField(
                     value = playlistName,
                     onValueChange = onNameChange,
-                    label = { Text("歌单名称") },
+                    label = { Text(playlistNameText) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -888,7 +901,7 @@ fun PlaylistDialog(
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            text = "取消",
+                            text = cancelText,
                             fontSize = 17.sp,
                             color = if (isDarkTheme) {
                                 Color(0xFFB8B8D1).copy(alpha = 0.8f)
@@ -912,7 +925,7 @@ fun PlaylistDialog(
                         modifier = Modifier.height(48.dp)
                     ) {
                         Text(
-                            text = "确定",
+                            text = confirmText,
                             fontSize = 17.sp,
                             color = if (isDarkTheme) {
                                 Color.White.copy(alpha = 0.95f)

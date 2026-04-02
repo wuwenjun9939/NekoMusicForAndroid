@@ -22,6 +22,7 @@ import com.neko.music.ui.theme.RoseRed
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.neko.music.R
 import kotlinx.coroutines.launch
 
@@ -35,7 +36,11 @@ fun CacheManagementScreen(
     val cacheManager = remember { MusicCacheManager.getInstance(context) }
     val playlistManager = remember { com.neko.music.data.manager.PlaylistManager.getInstance(context) }
     val musicPlayerManager = remember { com.neko.music.service.MusicPlayerManager.getInstance(context) }
-    
+
+    // 预加载字符串资源
+    val unknownArtist = stringResource(id = R.string.unknown_artist)
+    val unknownSong = stringResource(id = R.string.unknown_song)
+
     // 缓存数据
     var cacheSize by remember { mutableStateOf(cacheManager.getCacheSizeFormatted()) }
     var cachedMusicCount by remember { mutableStateOf(cacheManager.getCachedMusicCount()) }
@@ -57,16 +62,16 @@ fun CacheManagementScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("缓存管理") },
+                title = { Text(stringResource(id = R.string.cache_management)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "返回")
+                        Icon(Icons.Default.ArrowBack, contentDescription = stringResource(id = R.string.back))
                     }
                 },
                 actions = {
                     // 播放全部按钮
                     TextButton(
-                        onClick = {
+                        onClick = { 
                             if (cachedItems.isNotEmpty()) {
                                 isLoading = true
                                 kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
@@ -84,8 +89,8 @@ fun CacheManagementScreen(
                                                 val tempMusic = com.neko.music.data.model.Music(
                                                     id = musicId,
                                                     title = item.second,
-                                                    artist = "未知歌手",
-                                                    album = "未知专辑",
+                                                    artist = unknownArtist,
+                                                    album = unknownSong,
                                                     duration = 0,
                                                     filePath = null,
                                                     coverFilePath = null,
@@ -133,7 +138,7 @@ fun CacheManagementScreen(
                         enabled = cachedItems.isNotEmpty() && !isLoading
                     ) {
                         Text(
-                            text = "播放全部",
+                            text = stringResource(id = R.string.play_all),
                             color = if (cachedItems.isNotEmpty() && !isLoading) RoseRed else Color.Gray,
                             fontWeight = FontWeight.Bold
                         )
@@ -148,7 +153,7 @@ fun CacheManagementScreen(
                         enabled = cachedItems.isNotEmpty()
                     ) {
                         Text(
-                            text = "清空全部",
+                            text = stringResource(id = R.string.clear_all_cache),
                             color = if (cachedItems.isNotEmpty()) RoseRed else Color.Gray,
                             fontWeight = FontWeight.Bold
                         )
@@ -171,14 +176,14 @@ fun CacheManagementScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "暂无缓存",
+                        text = stringResource(id = R.string.no_cache),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        text = "播放音乐后会自动缓存",
+                        text = stringResource(id = R.string.cache_hint),
                         fontSize = 14.sp,
                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.6f) else Color.Gray
                     )
@@ -209,26 +214,26 @@ fun CacheManagementScreen(
                             ) {
                                 Column {
                                     Text(
-                                        text = "缓存统计",
+                                        text = stringResource(id = R.string.cache_statistics),
                                         fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = "已缓存 $cachedMusicCount 首歌曲",
+                                        text = stringResource(id = R.string.cached_songs_count, cachedMusicCount),
                                         fontSize = 14.sp,
                                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                                     )
                                     Text(
-                                        text = "占用空间：$cacheSize",
+                                        text = stringResource(id = R.string.cache_size, cacheSize),
                                         fontSize = 14.sp,
                                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                                     )
                                     if (isLoading) {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         Text(
-                                            text = "正在准备播放列表...",
+                                            text = stringResource(id = R.string.preparing_playlist),
                                             fontSize = 14.sp,
                                             color = RoseRed
                                         )
@@ -246,7 +251,7 @@ fun CacheManagementScreen(
                     Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
-                        text = "缓存列表",
+                        text = stringResource(id = R.string.cache_list),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black,
@@ -279,7 +284,7 @@ fun CacheManagementScreen(
             onDismissRequest = { showClearDialog = false },
             title = {
                 Text(
-                    text = "清空全部缓存",
+                    text = stringResource(id = R.string.clear_all_cache),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = RoseRed
@@ -288,19 +293,19 @@ fun CacheManagementScreen(
             text = {
                 Column {
                     Text(
-                        text = "确定要清空所有缓存吗？",
+                        text = stringResource(id = R.string.confirm_clear_all_cache),
                         fontSize = 16.sp,
                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "这将删除 $cachedMusicCount 首歌曲的缓存",
+                        text = stringResource(id = R.string.clear_all_cache_info, cachedMusicCount),
                         fontSize = 14.sp,
                         color = Color.Red
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "释放空间：$cacheSize",
+                        text = stringResource(id = R.string.free_space, cacheSize),
                         fontSize = 14.sp,
                         color = Color.Red
                     )
@@ -321,7 +326,7 @@ fun CacheManagementScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "清空",
+                        text = stringResource(id = R.string.clear),
                         fontSize = 16.sp,
                         color = Color.White
                     )
@@ -330,7 +335,7 @@ fun CacheManagementScreen(
             dismissButton = {
                 TextButton(onClick = { showClearDialog = false }) {
                     Text(
-                        text = "取消",
+                        text = stringResource(id = R.string.cancel),
                         fontSize = 16.sp,
                         color = Color.Gray
                     )
@@ -345,7 +350,7 @@ fun CacheManagementScreen(
             onDismissRequest = { showDeleteItemDialog = null },
             title = {
                 Text(
-                    text = "删除缓存",
+                    text = stringResource(id = R.string.delete_cache),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = RoseRed
@@ -354,7 +359,7 @@ fun CacheManagementScreen(
             text = {
                 Column {
                     Text(
-                        text = "确定要删除这首歌的缓存吗？",
+                        text = stringResource(id = R.string.confirm_delete_cache),
                         fontSize = 16.sp,
                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                     )
@@ -382,7 +387,7 @@ fun CacheManagementScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = "删除",
+                        text = stringResource(id = R.string.delete),
                         fontSize = 16.sp,
                         color = Color.White
                     )
@@ -391,7 +396,7 @@ fun CacheManagementScreen(
             dismissButton = {
                 TextButton(onClick = { showDeleteItemDialog = null }) {
                     Text(
-                        text = "取消",
+                        text = stringResource(id = R.string.cancel),
                         fontSize = 16.sp,
                         color = Color.Gray
                     )
@@ -474,7 +479,7 @@ fun CacheItem(
                     maxLines = 1
                 )
                 Text(
-                    text = "ID: $musicId",
+                    text = stringResource(id = R.string.id_label, musicId),
                     fontSize = 13.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                 )
@@ -482,7 +487,7 @@ fun CacheItem(
             
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = "删除",
+                contentDescription = stringResource(id = R.string.delete),
                 tint = RoseRed,
                 modifier = Modifier.size(24.dp)
             )

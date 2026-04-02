@@ -42,6 +42,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -50,7 +52,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.compose.ui.res.painterResource
 import androidx.core.view.WindowCompat
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -111,7 +112,11 @@ fun AccountInfoScreen(
     
     // 显示成功提示
     var showSuccess by remember { mutableStateOf(false) }
-    
+
+    // Preload string resources for non-Composable contexts
+    val avatarUploadSuccess = stringResource(id = R.string.avatar_upload_success)
+    val avatarUpdateSuccess = stringResource(id = R.string.avatar_update_success)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -126,7 +131,7 @@ fun AccountInfoScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "账号信息",
+                        text = stringResource(id = R.string.account_info),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
@@ -136,7 +141,7 @@ fun AccountInfoScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "返回",
+                            contentDescription = stringResource(id = R.string.back),
                             tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.9f) else Color.Black
                         )
                     }
@@ -172,7 +177,7 @@ fun AccountInfoScreen(
                             .data("https://music.cnmsb.xin/api/user/avatar/$userId?t=$avatarUpdateTime")
                             .crossfade(true)
                             .build(),
-                        contentDescription = "用户头像",
+                        contentDescription = stringResource(id = R.string.user_avatar),
                         modifier = Modifier.fillMaxSize()
                     )
 
@@ -184,37 +189,37 @@ fun AccountInfoScreen(
             // 用户信息卡片
             InfoCard(
                 icon = R.drawable.user,
-                title = "用户名",
+                title = stringResource(id = R.string.username),
                 value = username,
                 showArrow = false,
                 colorFilter = ColorFilter.tint(RoseRed)
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             InfoCard(
                 icon = R.drawable.email,
-                title = "邮箱",
+                title = stringResource(id = R.string.email),
                 value = email,
                 showArrow = false
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             InfoCard(
                 icon = R.drawable.password,
-                title = "密码",
-                value = "修改密码",
+                title = stringResource(id = R.string.password),
+                value = stringResource(id = R.string.modify_password),
                 showArrow = true,
                 onClick = { showPasswordDialog = true },
                 colorFilter = ColorFilter.tint(RoseRed)
             )
-            
+
             Spacer(modifier = Modifier.height(40.dp))
-            
+
             // 提示信息
             Text(
-                text = "点击头像可以更换头像",
+                text = stringResource(id = R.string.click_avatar_to_change),
                 fontSize = 13.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.7f) else Color.Gray,
                 modifier = Modifier
@@ -227,17 +232,17 @@ fun AccountInfoScreen(
         if (showAvatarDialog) {
             AlertDialog(
                 onDismissRequest = { showAvatarDialog = false },
-                title = { 
+                title = {
                     Text(
-                        "更换头像",
+                        stringResource(id = R.string.change_avatar),
                         color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
-                    ) 
+                    )
                 },
-                text = { 
+                text = {
                     Text(
-                        "是否要从相册选择新头像？",
+                        stringResource(id = R.string.change_avatar_confirm),
                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
-                    ) 
+                    )
                 },
                 confirmButton = {
                     TextButton(
@@ -246,12 +251,12 @@ fun AccountInfoScreen(
                             imagePickerLauncher.launch("image/*")
                         }
                     ) {
-                        Text("确定")
+                        Text(stringResource(id = R.string.confirm))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showAvatarDialog = false }) {
-                        Text("取消")
+                        Text(stringResource(id = R.string.cancel))
                     }
                 },
                 containerColor = if (isDarkTheme) Color(0xFF1A1A2E).copy(alpha = 0.95f) else Color.White
@@ -304,13 +309,13 @@ fun AccountInfoScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
-                        contentDescription = "成功",
+                        contentDescription = stringResource(id = R.string.success),
                         tint = Color(0xFF4CAF50),
                         modifier = Modifier.size(48.dp)
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        text = toastMessage ?: "操作成功",
+                        text = toastMessage ?: stringResource(id = R.string.operation_success),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
                         color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
@@ -342,11 +347,11 @@ fun AccountInfoScreen(
                 // 显示系统 Toast
                 android.widget.Toast.makeText(
                     context,
-                    "头像上传成功",
+                    avatarUploadSuccess,
                     android.widget.Toast.LENGTH_SHORT
                 ).show()
                 // 显示成功提示
-                toastMessage = "头像更新成功"
+                toastMessage = avatarUpdateSuccess
                 showSuccess = true
             }        )
     }
@@ -448,11 +453,11 @@ fun ChangePasswordDialog(
     
     suspend fun validateAndConfirm() {
         when {
-            oldPassword.isEmpty() -> errorMessage = "请输入原密码"
-            newPassword.isEmpty() -> errorMessage = "请输入新密码"
-            confirmPassword.isEmpty() -> errorMessage = "请确认新密码"
-            newPassword != confirmPassword -> errorMessage = "两次输入的密码不一致"
-            newPassword.length < 6 -> errorMessage = "新密码长度不能少于6位"
+            oldPassword.isEmpty() -> errorMessage = context.getString(R.string.please_enter_old_password)
+            newPassword.isEmpty() -> errorMessage = context.getString(R.string.please_enter_new_password)
+            confirmPassword.isEmpty() -> errorMessage = context.getString(R.string.please_confirm_new_password)
+            newPassword != confirmPassword -> errorMessage = context.getString(R.string.password_mismatch)
+            newPassword.length < 6 -> errorMessage = context.getString(R.string.new_password_length_error)
             else -> {
                 isUpdating = true
                 val success = onConfirm(oldPassword, newPassword)
@@ -468,11 +473,11 @@ fun ChangePasswordDialog(
     
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { 
+        title = {
             Text(
-                "修改密码",
+                stringResource(id = R.string.modify_password),
                 color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
-            ) 
+            )
         },
         text = {
             Column(
@@ -483,18 +488,18 @@ fun ChangePasswordDialog(
                 // 原密码
                 OutlinedTextField(
                     value = oldPassword,
-                    onValueChange = { 
+                    onValueChange = {
                         oldPassword = it
                         errorMessage = null
                     },
-                    label = { Text("原密码") },
+                    label = { Text(stringResource(id = R.string.old_password)) },
                     singleLine = true,
                     visualTransformation = if (showOldPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { showOldPassword = !showOldPassword }) {
                             Icon(
                                 imageVector = if (showOldPassword) Icons.Default.Close else Icons.Default.Check,
-                                contentDescription = if (showOldPassword) "隐藏密码" else "显示密码",
+                                contentDescription = if (showOldPassword) stringResource(id = R.string.hide_password) else stringResource(id = R.string.show_password),
                                 tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                             )
                         }
@@ -507,18 +512,18 @@ fun ChangePasswordDialog(
                 // 新密码
                 OutlinedTextField(
                     value = newPassword,
-                    onValueChange = { 
+                    onValueChange = {
                         newPassword = it
                         errorMessage = null
                     },
-                    label = { Text("新密码") },
+                    label = { Text(stringResource(id = R.string.new_password)) },
                     singleLine = true,
                     visualTransformation = if (showNewPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { showNewPassword = !showNewPassword }) {
                             Icon(
                                 imageVector = if (showNewPassword) Icons.Default.Close else Icons.Default.Check,
-                                contentDescription = if (showNewPassword) "隐藏密码" else "显示密码",
+                                contentDescription = if (showNewPassword) stringResource(id = R.string.hide_password) else stringResource(id = R.string.show_password),
                                 tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                             )
                         }
@@ -531,18 +536,18 @@ fun ChangePasswordDialog(
                 // 确认新密码
                 OutlinedTextField(
                     value = confirmPassword,
-                    onValueChange = { 
+                    onValueChange = {
                         confirmPassword = it
                         errorMessage = null
                     },
-                    label = { Text("确认新密码") },
+                    label = { Text(stringResource(id = R.string.confirm_new_password)) },
                     singleLine = true,
                     visualTransformation = if (showConfirmPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { showConfirmPassword = !showConfirmPassword }) {
                             Icon(
                                 imageVector = if (showConfirmPassword) Icons.Default.Close else Icons.Default.Check,
-                                contentDescription = if (showConfirmPassword) "隐藏密码" else "显示密码",
+                                contentDescription = if (showConfirmPassword) stringResource(id = R.string.hide_password) else stringResource(id = R.string.show_password),
                                 tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                             )
                         }
@@ -572,12 +577,12 @@ fun ChangePasswordDialog(
                 },
                 enabled = !isUpdating
             ) {
-                Text(if (isUpdating) "修改中..." else "确定")
+                Text(if (isUpdating) stringResource(id = R.string.modifying) else stringResource(id = R.string.confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("取消")
+                Text(stringResource(id = R.string.cancel))
             }
         },
         containerColor = if (isDarkTheme) Color(0xFF1A1A2E).copy(alpha = 0.95f) else Color.White
@@ -740,16 +745,16 @@ fun AvatarCropDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text("取消", color = Color.White)
+                    Text(stringResource(id = R.string.cancel), color = Color.White)
                 }
-                
+
                 Text(
-                    text = "裁剪头像",
+                    text = stringResource(id = R.string.crop_avatar),
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                
+
                 TextButton(
                     onClick = {
                         // 裁剪图片并上传
@@ -823,7 +828,7 @@ fun AvatarCropDialog(
                         }
                     }
                 ) {
-                    Text("完成", color = RoseRed)
+                    Text(stringResource(id = R.string.complete), color = RoseRed)
                 }
             }
         }
@@ -896,7 +901,7 @@ fun AvatarCropDialog(
                 .padding(bottom = 32.dp)
         ) {
             Text(
-                text = "拖动和缩放图片以选择头像区域",
+                text = stringResource(id = R.string.drag_scale_avatar),
                 color = Color.White,
                 fontSize = 14.sp,
                 modifier = Modifier.align(Alignment.Center)

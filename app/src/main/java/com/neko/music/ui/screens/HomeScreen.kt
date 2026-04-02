@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -322,13 +323,13 @@ fun HomeScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = "搜索",
+                                contentDescription = stringResource(id = R.string.search),
                                 tint = RoseRed.copy(alpha = 0.8f),
                                 modifier = Modifier.size(22.dp)
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(
-                                text = "搜索音乐、歌手、专辑...",
+                                text = stringResource(id = R.string.search_music_artist_album),
                                 fontSize = 15.sp,
                                 color = Color.Gray.copy(alpha = 0.65f),
                                 fontWeight = FontWeight.Normal
@@ -354,7 +355,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "推荐歌单",
+                            text = stringResource(id = R.string.recommended_playlists),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = RoseRed.copy(alpha = 0.8f)
@@ -381,7 +382,7 @@ fun HomeScreen(
                         }
                     } else if (loadError) {
                         Text(
-                            text = "网络错误",
+                            text = stringResource(id = R.string.network_error_msg),
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.6f),
                             modifier = Modifier.padding(vertical = 40.dp)
@@ -461,6 +462,10 @@ fun HeaderSection(
     onSearchClick: () -> Unit,
     floatOffset: Float
 ) {
+    // Preload strings
+    val searchText = stringResource(id = R.string.search)
+    val searchMusicArtistAlbumText = stringResource(id = R.string.search_music_artist_album)
+    
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -498,13 +503,13 @@ fun HeaderSection(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "搜索",
+                    contentDescription = searchText,
                     tint = Color.White.copy(alpha = 0.9f),
                     modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(14.dp))
                 Text(
-                    text = "搜索音乐、歌手、专辑...",
+                    text = searchMusicArtistAlbumText,
                     fontSize = 16.sp,
                     color = Color.White.copy(alpha = 0.95f),
                     fontWeight = FontWeight.Medium
@@ -581,7 +586,7 @@ fun WelcomeBanner() {
         ) {
             Column {
                 Text(
-                    text = "探索音乐世界",
+                    text = stringResource(id = R.string.explore_music_world),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = RoseRed,
@@ -589,7 +594,7 @@ fun WelcomeBanner() {
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "发现你喜欢的音乐",
+                    text = stringResource(id = R.string.discover_music_you_like),
                     fontSize = 15.sp,
                     color = Color.Gray.copy(alpha = 0.85f),
                     fontWeight = FontWeight.Medium
@@ -730,7 +735,7 @@ fun UpdateDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "发现新版本",
+                    text = stringResource(id = R.string.new_version_found),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = RoseRed,
@@ -740,7 +745,7 @@ fun UpdateDialog(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = "新版本：$versionName",
+                    text = stringResource(id = R.string.new_version, versionName),
                     fontSize = 17.sp,
                     color = Color.Gray.copy(alpha = 0.85f),
                     fontWeight = FontWeight.Medium
@@ -749,7 +754,7 @@ fun UpdateDialog(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "版本号：$versionCode",
+                    text = stringResource(id = R.string.version_code, versionCode),
                     fontSize = 17.sp,
                     color = Color.Gray.copy(alpha = 0.85f),
                     fontWeight = FontWeight.Medium
@@ -763,7 +768,7 @@ fun UpdateDialog(
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            text = "稍后",
+                            text = stringResource(id = R.string.later),
                             fontSize = 17.sp,
                             color = Color.Gray.copy(alpha = 0.8f),
                             fontWeight = FontWeight.Medium
@@ -781,7 +786,7 @@ fun UpdateDialog(
                         modifier = Modifier.height(48.dp)
                     ) {
                         Text(
-                            text = "立即更新",
+                            text = stringResource(id = R.string.update_now),
                             fontSize = 17.sp,
                             color = Color.White,
                             fontWeight = FontWeight.Medium
@@ -798,6 +803,9 @@ fun DownloadProgressDialog(
     progress: Float,
     onDismiss: () -> Unit
 ) {
+    // Preload strings
+    val downloadingUpdateText = stringResource(id = R.string.downloading_update)
+    
     Dialog(
         onDismissRequest = { },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
@@ -843,7 +851,7 @@ fun DownloadProgressDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "正在下载更新",
+                    text = downloadingUpdateText,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = RoseRed,
@@ -878,6 +886,10 @@ fun DownloadProgressDialog(
 fun UpdateSuccessDialog(
     onDismiss: () -> Unit
 ) {
+    // Preload strings
+    val downloadCompleteText = stringResource(id = R.string.download_complete)
+    val installingUpdateText = stringResource(id = R.string.installing_update)
+    
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
@@ -923,7 +935,7 @@ fun UpdateSuccessDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "下载完成",
+                    text = downloadCompleteText,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -933,7 +945,7 @@ fun UpdateSuccessDialog(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "正在安装更新...",
+                    text = installingUpdateText,
                     fontSize = 17.sp,
                     color = Color.Gray.copy(alpha = 0.85f),
                     fontWeight = FontWeight.Medium
@@ -948,8 +960,13 @@ fun UpdateErrorDialog(
     message: String,
     onDismiss: () -> Unit
 ) {
+    // Preload strings
+    val updateFailedText = stringResource(id = R.string.update_failed)
+    val confirmText = stringResource(id = R.string.confirm)
+    
     Dialog(
-        onDismissRequest = onDismiss
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         Surface(
             shape = RoundedCornerShape(24.dp),
@@ -964,7 +981,8 @@ fun UpdateErrorDialog(
                 )
         ) {
             Column(
-                modifier = Modifier.padding(32.dp)
+                modifier = Modifier.padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 // 顶部图标
                 Box(
@@ -991,7 +1009,7 @@ fun UpdateErrorDialog(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "更新失败",
+                    text = updateFailedText,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFF44336),
@@ -1015,7 +1033,7 @@ fun UpdateErrorDialog(
                 ) {
                     TextButton(onClick = onDismiss) {
                         Text(
-                            text = "确定",
+                            text = confirmText,
                             fontSize = 17.sp,
                             color = RoseRed,
                             fontWeight = FontWeight.Medium
@@ -1476,6 +1494,11 @@ fun RankingMusicCard(
     musicList: List<com.neko.music.data.model.Music>,
     onClick: () -> Unit
 ) {
+    // Preload strings
+    val hotMusicText = stringResource(id = R.string.hot_music)
+    val hotMusicDescText = stringResource(id = R.string.hot_music_desc)
+    val songsCountShortText = stringResource(id = R.string.songs_count_short, musicList.size)
+    
     Column(
         modifier = Modifier
             .width(160.dp)
@@ -1522,7 +1545,7 @@ fun RankingMusicCard(
                         .data(coverUrl ?: "https://music.cnmsb.xin/api/user/avatar/default")
                         .crossfade(true)
                         .build(),
-                    contentDescription = "热门音乐",
+                    contentDescription = hotMusicText,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -1550,7 +1573,7 @@ fun RankingMusicCard(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "${musicList.size}首",
+                    text = songsCountShortText,
                     fontSize = 11.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
@@ -1562,7 +1585,7 @@ fun RankingMusicCard(
         
         // 标题
         Text(
-            text = "热门音乐",
+            text = hotMusicText,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = RoseRed.copy(alpha = 0.9f),
@@ -1575,7 +1598,7 @@ fun RankingMusicCard(
         
         // 描述
         Text(
-            text = "播放次数最高的歌曲",
+            text = hotMusicDescText,
             fontSize = 12.sp,
             color = RoseRed.copy(alpha = 0.7f),
             maxLines = 1,

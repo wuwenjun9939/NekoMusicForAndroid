@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.activity.compose.BackHandler
 import androidx.compose.ui.unit.dp
@@ -97,14 +98,14 @@ fun PlaylistScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "返回",
+                            contentDescription = stringResource(id = R.string.back),
                             tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.9f) else Color.Black,
                             modifier = Modifier.size(24.dp)
                         )
                     }
 
                     Text(
-                        text = "播放列表",
+                        text = stringResource(id = R.string.playback_list),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
@@ -120,7 +121,7 @@ fun PlaylistScreen(
                         }
                     ) {
                         Text(
-                            text = "清空",
+                            text = stringResource(id = R.string.clear),
                             fontSize = 14.sp,
                             color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                         )
@@ -143,7 +144,7 @@ fun PlaylistScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "播放列表为空",
+                            text = stringResource(id = R.string.playlist_empty),
                             fontSize = 14.sp,
                             color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                         )

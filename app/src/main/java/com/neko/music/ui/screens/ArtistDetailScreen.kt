@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,10 @@ fun ArtistDetailScreen(
     var musicList by remember { mutableStateOf<List<Music>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
-    
+
+    // 预加载字符串资源
+    val noMusicFound = stringResource(id = R.string.no_music_found)
+
     // 加载歌手的音乐列表
     LaunchedEffect(artistName) {
         scope.launch {
@@ -121,7 +125,7 @@ fun ArtistDetailScreen(
                         }
                     } else {
                         isLoading = false
-                        errorMessage = "未找到音乐"
+                        errorMessage = noMusicFound
                     }
                 } catch (e: Exception) {
                     Log.e("ArtistDetailScreen", "JSON解析失败", e)
@@ -166,7 +170,7 @@ fun ArtistDetailScreen(
                         Log.d("ArtistDetailScreen", "加载到 ${musics.size} 首歌曲（正则解析）")
                     } else {
                         isLoading = false
-                        errorMessage = "未找到音乐"
+                        errorMessage = noMusicFound
                     }
                 }
             } catch (e: Exception) {
@@ -197,7 +201,7 @@ fun ArtistDetailScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "返回",
+                    contentDescription = stringResource(id = R.string.back),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -205,7 +209,7 @@ fun ArtistDetailScreen(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = "歌手详情",
+                text = stringResource(id = R.string.artist_detail),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -273,7 +277,7 @@ fun ArtistDetailScreen(
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
-                                        text = "$musicCount 首歌曲",
+                                        text = stringResource(id = R.string.songs_count_suffix, musicCount),
                                         fontSize = 14.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -348,12 +352,12 @@ fun ArtistDetailScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.PlayArrow,
-                                    contentDescription = "播放全部",
+                                    contentDescription = stringResource(id = R.string.play_all),
                                     modifier = Modifier.size(20.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "播放全部",
+                                    text = stringResource(id = R.string.play_all),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -409,7 +413,7 @@ fun ArtistMusicItem(
             if (!coverUrl.isNullOrEmpty()) {
                 coil.compose.AsyncImage(
                     model = coverUrl,
-                    contentDescription = "封面",
+                    contentDescription = stringResource(id = R.string.cover),
                     modifier = Modifier.size(44.dp),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )

@@ -30,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.neko.music.R
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -56,8 +57,8 @@ fun AboutScreen(
         }
     }
     
-    val versionName = packageInfo?.versionName ?: "未知版本"
-    val versionCode = packageInfo?.longVersionCode?.toString() ?: "未知"
+    val versionName = packageInfo?.versionName ?: stringResource(id = R.string.unknown_version)
+    val versionCode = packageInfo?.longVersionCode?.toString() ?: stringResource(id = R.string.unknown)
     
     // 浮动动画
     val infiniteTransition = rememberInfiniteTransition(label = "floating")
@@ -101,12 +102,12 @@ fun AboutScreen(
             // 应用信息卡片
             InfoCard(
                 iconRes = R.drawable.about,
-                title = "应用信息",
+                title = stringResource(id = R.string.app_info),
                 items = listOf(
-                    "应用名称" to "Neko云音乐",
-                    "版本号" to versionName,
-                    "版本代码" to versionCode,
-                    "包名" to "com.neko.music"
+                    stringResource(id = R.string.app_name_label) to stringResource(id = R.string.app_name),
+                    stringResource(id = R.string.version_number) to versionName,
+                    stringResource(id = R.string.version_code_label) to versionCode,
+                    stringResource(id = R.string.package_name) to "com.neko.music"
                 ),
                 scale = scale
             )
@@ -116,10 +117,10 @@ fun AboutScreen(
             // 组织信息卡片
             InfoCard(
                 iconRes = R.drawable.about,
-                title = "组织信息",
+                title = stringResource(id = R.string.organization_info),
                 items = listOf(
-                    "组织名称" to "Fantasy Network「梦幻网络」",
-                    "联系方式" to "support@cnmsb.xin"
+                    stringResource(id = R.string.organization_name) to "Fantasy Network「梦幻网络」",
+                    stringResource(id = R.string.contact_info) to "support@cnmsb.xin"
                 ),
                 scale = scale
             )
@@ -244,14 +245,14 @@ fun TechStackCard(scale: Float) {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.setting),
-                    contentDescription = "技术栈",
+                    contentDescription = stringResource(id = R.string.tech_stack),
                     modifier = Modifier.size(28.dp),
                     colorFilter = ColorFilter.tint(RoseRed)
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "技术栈",
+                    text = stringResource(id = R.string.tech_stack),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
@@ -268,12 +269,12 @@ fun TechStackCard(scale: Float) {
             Spacer(modifier = Modifier.height(16.dp))
             
             val techStack = listOf(
-                "Kotlin" to "编程语言",
-                "Jetpack Compose" to "UI框架",
-                "Ktor" to "网络请求",
-                "ExoPlayer" to "音频播放",
-                "Room" to "本地数据库",
-                "Coil" to "图片加载"
+                "Kotlin" to stringResource(id = R.string.programming_language),
+                "Jetpack Compose" to stringResource(id = R.string.ui_framework),
+                "Ktor" to stringResource(id = R.string.network_request),
+                "ExoPlayer" to stringResource(id = R.string.audio_playback),
+                "Room" to stringResource(id = R.string.local_database),
+                "Coil" to stringResource(id = R.string.image_loading)
             )
             
             techStack.chunked(2).forEach { chunk ->
@@ -354,7 +355,7 @@ fun CopyrightCard() {
             Spacer(modifier = Modifier.height(12.dp))
             
             Text(
-                text = "版权信息",
+                text = stringResource(id = R.string.copyright_info),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
@@ -370,7 +371,7 @@ fun CopyrightCard() {
             Spacer(modifier = Modifier.height(16.dp))
             
             Text(
-                text = "蜀ICP备2025177767号-1",
+                text = stringResource(id = R.string.icp_license),
                 fontSize = 14.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                 textAlign = TextAlign.Center
@@ -379,7 +380,7 @@ fun CopyrightCard() {
             Spacer(modifier = Modifier.height(8.dp))
             
             Text(
-                text = "如有侵权请联系 support@cnmsb.xin",
+                text = stringResource(id = R.string.copyright_contact),
                 fontSize = 14.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                 textAlign = TextAlign.Center
@@ -388,7 +389,7 @@ fun CopyrightCard() {
             Spacer(modifier = Modifier.height(12.dp))
             
             Text(
-                text = "© 2025-2026 Fantasy Network「梦幻网络」",
+                text = stringResource(id = R.string.copyright_text),
                 fontSize = 14.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                 textAlign = TextAlign.Center,
@@ -398,7 +399,7 @@ fun CopyrightCard() {
             Spacer(modifier = Modifier.height(4.dp))
             
             Text(
-                text = "保留所有权利",
+                text = stringResource(id = R.string.all_rights_reserved),
                 fontSize = 14.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                 textAlign = TextAlign.Center

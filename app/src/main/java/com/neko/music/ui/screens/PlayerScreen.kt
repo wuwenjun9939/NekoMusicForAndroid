@@ -91,6 +91,7 @@ import com.neko.music.data.model.Music
 import com.neko.music.ui.theme.RoseRed
 import com.neko.music.ui.theme.SakuraPink
 import androidx.compose.animation.core.Spring
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
@@ -257,6 +258,17 @@ fun PlayerScreen(
     // 创建歌单对话框状态
     var showCreateDialog by remember { mutableStateOf(false) }
     var dialogPlaylistName by remember { mutableStateOf("") }
+
+    // 预加载字符串资源
+    val sleepTimerCancelled = stringResource(id = R.string.sleep_timer_cancelled)
+    val pleaseLoginFirst = stringResource(id = R.string.please_login_first)
+    val createSuccess = stringResource(id = R.string.create_success)
+    val listLoop = stringResource(id = R.string.list_loop)
+    val singleLoop = stringResource(id = R.string.single_loop)
+    val shufflePlay = stringResource(id = R.string.shuffle_play)
+    val linkCopied = stringResource(id = R.string.link_copied)
+    val copyFailed = stringResource(id = R.string.copy_failed)
+    val shareFailed = stringResource(id = R.string.share_failed)
 
     // 从播放器获取当前音乐信息
     val currentMusic = remember(currentMusicId) {
@@ -447,7 +459,7 @@ fun PlayerScreen(
                     if (isLoggedIn) {
                         playerManager.toggleFavorite()
                     } else {
-                        Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, pleaseLoginFirst, Toast.LENGTH_SHORT).show()
                     }
                 },
                 showLyrics = showLyrics,
@@ -492,9 +504,9 @@ fun PlayerScreen(
     LaunchedEffect(playModeChanged) {
         if (playModeChanged > 0) {
             val message = when (playMode) {
-                PlayMode.LIST_LOOP -> "列表循环"
-                PlayMode.SINGLE_LOOP -> "单曲循环"
-                PlayMode.SHUFFLE -> "随机播放"
+                PlayMode.LIST_LOOP -> listLoop
+                PlayMode.SINGLE_LOOP -> singleLoop
+                PlayMode.SHUFFLE -> shufflePlay
             }
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
@@ -513,9 +525,9 @@ fun PlayerScreen(
                         val shareText = "【${currentMusic.title}-${currentMusic.artist}】 Neko云音乐 https://music.cnmsb.xin/detail/${currentMusic.id}"
                         val clip = android.content.ClipData.newPlainText("音乐链接", shareText)
                         clipboardManager.setPrimaryClip(clip)
-                        Toast.makeText(context, "链接已复制", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, linkCopied, Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
-                        Toast.makeText(context, "复制失败", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, copyFailed, Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -530,11 +542,13 @@ fun PlayerScreen(
                                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                             },
                             onFailure = { error ->
-                                Toast.makeText(context, "下载失败: ${error.message}", Toast.LENGTH_SHORT).show()
+                                val errorMsg = error.message ?: "Unknown error"
+                                Toast.makeText(context, "下载失败: $errorMsg", Toast.LENGTH_SHORT).show()
                             }
                         )
                     } catch (e: Exception) {
-                        Toast.makeText(context, "下载失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                        val errorMsg = e.message ?: "Unknown error"
+                        Toast.makeText(context, "下载失败: $errorMsg", Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -563,13 +577,13 @@ fun PlayerScreen(
                             context.startActivity(webIntent)
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, shareFailed, Toast.LENGTH_SHORT).show()
                     }
                 }
             },
             onSpeedChange = { speed ->
                 playerManager.setPlaybackSpeed(speed)
-                Toast.makeText(context, "倍速: ${speed}x", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, String.format("播放速度: %.1fx", speed), Toast.LENGTH_SHORT).show()
             },
             currentSpeed = playbackSpeed,
             onSleepTimerChange = { minutes ->
@@ -578,16 +592,16 @@ fun PlayerScreen(
                 } else {
                     playerManager.setSleepTimer(minutes)
                     val message = if (minutes == 0) {
-                        "定时关闭已取消"
+                        sleepTimerCancelled
                     } else {
                         val hours = minutes / 60
                         val mins = minutes % 60
                         if (hours > 0 && mins > 0) {
-                            "${hours}小时${mins}分钟后关闭"
+                            String.format("%d小时%d分钟后关闭", hours, mins)
                         } else if (hours > 0) {
-                            "${hours}小时后关闭"
+                            String.format("%d小时后关闭", hours)
                         } else {
-                            "${minutes}分钟后关闭"
+                            String.format("%d分钟后关闭", minutes)
                         }
                     }
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
@@ -603,14 +617,14 @@ fun PlayerScreen(
                     try {
                         val token = tokenManager.getToken()
                         Log.d("PlayerScreen", "开始添加到歌单: playlistId=${playlist.id}, musicId=${currentMusic.id}, token=$token")
-                        
+
                         if (token != null) {
                             val playlistApi = PlaylistApi(token, context)
                             Log.d("PlayerScreen", "调用API添加到歌单")
-                            
+
                             val response = playlistApi.addMusicToPlaylist(playlist.id, currentMusic.id)
                             Log.d("PlayerScreen", "API响应: success=${response.success}, message=${response.message}")
-                            
+
                             if (response.success) {
                                 Toast.makeText(context, "已添加到${playlist.name}", Toast.LENGTH_SHORT).show()
                                 showShareDialog = false
@@ -619,11 +633,12 @@ fun PlayerScreen(
                             }
                         } else {
                             Log.e("PlayerScreen", "Token为空")
-                            Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, pleaseLoginFirst, Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         Log.e("PlayerScreen", "添加到歌单失败", e)
-                        Toast.makeText(context, "添加失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                        val errorMsg = e.message ?: "Unknown error"
+                        Toast.makeText(context, "添加失败: $errorMsg", Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -631,7 +646,7 @@ fun PlayerScreen(
                 if (isLoggedIn) {
                     showCreateDialog = true
                 } else {
-                    Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, pleaseLoginFirst, Toast.LENGTH_SHORT).show()
                 }
             }
         )
@@ -640,7 +655,7 @@ fun PlayerScreen(
     // 创建歌单对话框
     if (showCreateDialog) {
         PlaylistDialog(
-            title = "创建歌单",
+            title = stringResource(id = R.string.create_playlist),
             playlistName = dialogPlaylistName,
             onNameChange = { dialogPlaylistName = it },
             onConfirm = {
@@ -650,18 +665,18 @@ fun PlayerScreen(
                         if (token != null) {
                             val playlistApi = PlaylistApi(token, context)
                             val response = playlistApi.createPlaylist(dialogPlaylistName)
-                            
+
                             if (response.success) {
-                                Toast.makeText(context, "创建成功", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, createSuccess, Toast.LENGTH_SHORT).show()
                                 showCreateDialog = false
                                 dialogPlaylistName = ""
-                                
+
                                 // 重新加载歌单列表
                                 val newResponse = playlistApi.getMyPlaylists()
                                 if (newResponse.success) {
                                     val newPlaylists = newResponse.playlists ?: emptyList()
                                     playlists = newPlaylists
-                                    
+
                                     // 为新歌单加载第一首音乐封面
                                     val newPlaylistId = response.playlist?.id
                                     if (newPlaylistId != null) {
@@ -685,11 +700,12 @@ fun PlayerScreen(
                                 Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            Toast.makeText(context, "请先登录", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, pleaseLoginFirst, Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: Exception) {
                         Log.e("PlayerScreen", "创建歌单失败", e)
-                        Toast.makeText(context, "创建失败: ${e.message}", Toast.LENGTH_SHORT).show()
+                        val errorMsg = e.message ?: "Unknown error"
+                        Toast.makeText(context, "创建失败: $errorMsg", Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -737,7 +753,7 @@ fun PlayerScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "需要通知权限",
+                            text = stringResource(id = R.string.notification_permission_title),
                             fontSize = 18.sp,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
@@ -746,7 +762,7 @@ fun PlayerScreen(
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Text(
-                            text = "为了在定时关闭时提醒您，\n需要通知权限",
+                            text = stringResource(id = R.string.notification_permission_message),
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -767,7 +783,7 @@ fun PlayerScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "取消",
+                                    text = stringResource(id = R.string.cancel),
                                     fontSize = 15.sp,
                                     color = Color.Gray,
                                     fontWeight = FontWeight.Medium
@@ -786,7 +802,7 @@ fun PlayerScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "授权",
+                                    text = stringResource(id = R.string.authorize),
                                     fontSize = 15.sp,
                                     color = Color.White,
                                     fontWeight = FontWeight.Medium
@@ -820,13 +836,13 @@ fun TopBar(
         ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "返回",
+                        contentDescription = stringResource(id = R.string.back),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
                 Text(
-                    text = "正在播放",
+                    text = stringResource(id = R.string.now_playing),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface
@@ -838,7 +854,7 @@ fun TopBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
-                        contentDescription = "更多",
+                        contentDescription = stringResource(id = R.string.more),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -869,7 +885,7 @@ fun CoverImage(
                 if (!coverUrl.isNullOrEmpty()) {
                     AsyncImage(
                         model = coverUrl,
-                        contentDescription = "封面",
+                        contentDescription = stringResource(id = R.string.cover),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = androidx.compose.ui.layout.ContentScale.Crop
                     )
@@ -927,7 +943,7 @@ fun CoverImage(
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "收藏",
+                        contentDescription = if (isFavorite) stringResource(id = R.string.favorite) else stringResource(id = R.string.unfavorite),
                         tint = if (isFavorite) RoseRed else Color.Gray,
                         modifier = Modifier.size(24.dp)
                     )
@@ -973,7 +989,7 @@ fun MusicInfo(
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "收藏",
+                        contentDescription = if (isFavorite) stringResource(id = R.string.favorite) else stringResource(id = R.string.unfavorite),
                         tint = if (isFavorite) RoseRed else Color.Gray,
                         modifier = Modifier.size(32.dp)
                     )
@@ -1059,7 +1075,7 @@ fun LyricSongInfoBar(
                 ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "收藏",
+                        contentDescription = if (isFavorite) stringResource(id = R.string.favorite) else stringResource(id = R.string.unfavorite),
                         tint = if (isFavorite) RoseRed else Color.Gray,
                         modifier = Modifier.size(20.dp)
                     )
@@ -1116,7 +1132,7 @@ fun LyricsSongInfo(
                 ) {
                     Icon(
                         imageVector = Icons.Default.FavoriteBorder,
-                        contentDescription = "收藏",
+                        contentDescription = stringResource(id = R.string.unfavorite),
                         tint = Color.Gray,
                         modifier = Modifier.size(24.dp)
                     )
@@ -1175,7 +1191,7 @@ fun LyricsView(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "暂无歌词",
+                                text = stringResource(id = R.string.no_lyrics),
                                 fontSize = 16.sp,
                                 color = Color.Gray
                             )
@@ -1439,6 +1455,11 @@ fun ShareDialog(
     var showCustomSleepTimerDialog by remember { mutableStateOf(false) }
     var customHours by remember { mutableStateOf(0) }
     var customMinutes by remember { mutableStateOf(0) }
+
+    // 预加载额外的字符串资源
+    val customLabel = stringResource(id = R.string.custom)
+    val closeLabel = stringResource(id = R.string.close)
+
     androidx.compose.ui.window.Dialog(
         onDismissRequest = onDismiss,
         properties = androidx.compose.ui.window.DialogProperties(
@@ -1495,7 +1516,7 @@ fun ShareDialog(
                             item {
                                 ShareGridItem(
                                     iconRes = R.drawable.twitter,
-                                    label = "分享到推特",
+                                    label = stringResource(id = R.string.share_to_twitter),
                                     color = Color(0xFF1DA1F2),
                                     onClick = onShareToTwitter
                                 )
@@ -1503,7 +1524,7 @@ fun ShareDialog(
                             item {
                                 ShareGridItem(
                                     iconRes = R.drawable.copy_link,
-                                    label = "复制链接",
+                                    label = stringResource(id = R.string.copy_link),
                                     color = RoseRed,
                                     onClick = onCopyLink
                                 )
@@ -1511,7 +1532,7 @@ fun ShareDialog(
                             item {
                                 ShareGridItem(
                                     iconRes = R.drawable.download,
-                                    label = "下载",
+                                    label = stringResource(id = R.string.download),
                                     color = Color(0xFF6B5B95),
                                     onClick = onDownload
                                 )
@@ -1528,7 +1549,7 @@ fun ShareDialog(
                                     .padding(horizontal = 16.dp)
                             ) {
                                 Text(
-                                    text = "添加到歌单",
+                                    text = stringResource(id = R.string.add_to_playlist),
                                     fontSize = 14.sp,
                                     color = Color.Gray,
                                     fontWeight = FontWeight.Medium,
@@ -1575,12 +1596,12 @@ fun ShareDialog(
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Default.Add,
-                                                    contentDescription = "新建",
+                                                    contentDescription = stringResource(id = R.string.create_new),
                                                     tint = RoseRed,
                                                     modifier = Modifier.size(24.dp)
                                                 )
                                                 Text(
-                                                    text = "新建",
+                                                    text = stringResource(id = R.string.create_new),
                                                     fontSize = 10.sp,
                                                     color = RoseRed,
                                                     fontWeight = FontWeight.Bold
@@ -1601,7 +1622,7 @@ fun ShareDialog(
                                 .padding(horizontal = 16.dp)
                         ) {
                             Text(
-                                text = "倍速",
+                                text = stringResource(id = R.string.playback_speed),
                                 fontSize = 14.sp,
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Medium,
@@ -1635,7 +1656,7 @@ fun ShareDialog(
                                 .padding(horizontal = 16.dp)
                         ) {
                             Text(
-                                text = "定时关闭",
+                                text = stringResource(id = R.string.sleep_timer),
                                 fontSize = 14.sp,
                                 color = Color.Gray,
                                 fontWeight = FontWeight.Medium,
@@ -1657,14 +1678,18 @@ fun ShareDialog(
                                             minutes = -1,
                                             isSelected = isCustomSelected,
                                             customMinutes = if (isCustomSelected) currentSleepTimerMinutes else null,
-                                            onClick = { showCustomSleepTimerDialog = true }
+                                            onClick = { showCustomSleepTimerDialog = true },
+                                            customLabel = customLabel,
+                                            closeLabel = closeLabel
                                         )
                                     } else {
                                         val minutes = presetMinutes[index]
                                         SleepTimerChip(
                                             minutes = minutes,
                                             isSelected = minutes == currentSleepTimerMinutes,
-                                            onClick = { onSleepTimerChange(minutes) }
+                                            onClick = { onSleepTimerChange(minutes) },
+                                            customLabel = customLabel,
+                                            closeLabel = closeLabel
                                         )
                                     }
                                 }
@@ -1690,7 +1715,7 @@ fun ShareDialog(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "取消",
+                                text = stringResource(id = R.string.cancel),
                                 fontSize = 17.sp,
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Medium
@@ -1812,7 +1837,9 @@ fun SleepTimerChip(
     minutes: Int,
     isSelected: Boolean,
     customMinutes: Int? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    customLabel: String = "",
+    closeLabel: String = ""
 ) {
     val backgroundColor = if (isSelected) RoseRed else Color(0xFFF5F5F5)
     val textColor = if (isSelected) Color.White else Color.Gray
@@ -1828,8 +1855,8 @@ fun SleepTimerChip(
                 "${mins}m"
             }
         }
-        minutes == -1 -> "自定义"
-        minutes == 0 -> "关闭"
+        minutes == -1 -> customLabel
+        minutes == 0 -> closeLabel
         else -> "${minutes}分钟"
     }
 
@@ -1918,7 +1945,7 @@ fun CustomSleepTimerDialog(
                             .padding(24.dp)
                     ) {
                         Text(
-                            text = "自定义定时关闭",
+                            text = stringResource(id = R.string.custom_sleep_timer),
                             fontSize = 18.sp,
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
@@ -1936,7 +1963,7 @@ fun CustomSleepTimerDialog(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "小时",
+                                    text = stringResource(id = R.string.hours),
                                     fontSize = 14.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -1951,7 +1978,7 @@ fun CustomSleepTimerDialog(
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.previous_song),
-                                            contentDescription = "减少",
+                                            contentDescription = stringResource(id = R.string.decrease),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                             modifier = Modifier.size(24.dp)
                                         )
@@ -1971,7 +1998,7 @@ fun CustomSleepTimerDialog(
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.next_song),
-                                            contentDescription = "增加",
+                                            contentDescription = stringResource(id = R.string.increase),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                             modifier = Modifier.size(24.dp)
                                         )
@@ -1991,7 +2018,7 @@ fun CustomSleepTimerDialog(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = "分钟",
+                                    text = stringResource(id = R.string.minutes),
                                     fontSize = 14.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -2006,7 +2033,7 @@ fun CustomSleepTimerDialog(
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.previous_song),
-                                            contentDescription = "减少",
+                                            contentDescription = stringResource(id = R.string.decrease),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                             modifier = Modifier.size(24.dp)
                                         )
@@ -2026,7 +2053,7 @@ fun CustomSleepTimerDialog(
                                     ) {
                                         Icon(
                                             painter = painterResource(R.drawable.next_song),
-                                            contentDescription = "增加",
+                                            contentDescription = stringResource(id = R.string.increase),
                                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                             modifier = Modifier.size(24.dp)
                                         )
@@ -2050,7 +2077,7 @@ fun CustomSleepTimerDialog(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "取消",
+                                    text = stringResource(id = R.string.cancel),
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     fontWeight = FontWeight.Medium
@@ -2066,7 +2093,7 @@ fun CustomSleepTimerDialog(
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = "确定",
+                                    text = stringResource(id = R.string.confirm),
                                     fontSize = 16.sp,
                                     color = Color.White,
                                     fontWeight = FontWeight.Medium
@@ -2115,7 +2142,7 @@ fun PlaylistChip(
             }
             AsyncImage(
                 model = coverUrl,
-                contentDescription = "封面",
+                contentDescription = stringResource(id = R.string.cover),
                 modifier = Modifier
                     .size(24.dp)
                     .clip(RoundedCornerShape(6.dp)),

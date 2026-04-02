@@ -50,6 +50,7 @@ fun FavoriteScreen(
 
     // 预加载字符串资源
     val getFavoritesFailed = stringResource(id = R.string.get_favorites_failed)
+    val networkErrorMsg = stringResource(id = R.string.network_error_msg)
 
     LaunchedEffect(Unit) {
         if (isLoggedIn) {
@@ -64,7 +65,7 @@ fun FavoriteScreen(
                         errorMessage = getFavoritesFailed
                     }
                 } catch (e: Exception) {
-                    errorMessage = "网络错误: ${e.message}"
+                    errorMessage = networkErrorMsg
                 }
             }
             isLoading = false
@@ -231,7 +232,7 @@ fun FavoriteScreen(
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = if (searchQuery.isEmpty()) "去发现喜欢的音乐吧" else "试试其他关键词",
+                                text = if (searchQuery.isEmpty()) stringResource(id = R.string.go_discover) else stringResource(id = R.string.try_other_keywords),
                                 fontSize = 14.sp,
                                 color = Color.Gray
                             )
@@ -258,13 +259,13 @@ fun FavoriteScreen(
                             ) {
                                 Icon(
                                     imageVector = androidx.compose.material.icons.Icons.Default.PlayArrow,
-                                    contentDescription = "播放全部",
+                                    contentDescription = stringResource(id = R.string.play_all),
                                     tint = Color.White,
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = "播放全部 (${filteredFavorites.size})",
+                                    text = stringResource(id = R.string.play_all_count, filteredFavorites.size),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White
@@ -340,7 +341,7 @@ fun FavoriteItem(
             ) {
                 coil.compose.AsyncImage(
                     model = coverUrl,
-                    contentDescription = "封面",
+                    contentDescription = stringResource(id = R.string.cover),
                     modifier = Modifier.fillMaxSize()
                 )
             }
@@ -399,7 +400,7 @@ fun FavoriteSearchBar(
     ) {
         Icon(
             imageVector = Icons.Default.Search,
-            contentDescription = "搜索",
+            contentDescription = stringResource(id = R.string.search),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp)
         )
@@ -416,7 +417,7 @@ fun FavoriteSearchBar(
             decorationBox = { innerTextField ->
                 if (query.isEmpty()) {
                     Text(
-                        text = "搜索歌曲",
+                        text = stringResource(id = R.string.search_music),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

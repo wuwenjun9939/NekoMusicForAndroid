@@ -22,7 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import com.neko.music.R
 import com.neko.music.ui.theme.RoseRed
 
 @Composable
@@ -63,7 +65,7 @@ fun DiscoverHeader() {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "发现",
+            text = stringResource(id = R.string.discover),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White
@@ -79,7 +81,7 @@ fun DiscoverContent() {
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = "热门榜单",
+            text = stringResource(id = R.string.hot_ranking),
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface
@@ -88,7 +90,7 @@ fun DiscoverContent() {
         Spacer(modifier = Modifier.height(16.dp))
         
         repeat(3) {
-            RankingItem("榜单 ${it + 1}")
+            RankingItem(stringResource(id = R.string.ranking_number, it + 1))
             Spacer(modifier = Modifier.height(12.dp))
         }
     }

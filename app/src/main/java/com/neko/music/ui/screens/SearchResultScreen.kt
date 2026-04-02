@@ -47,6 +47,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.neko.music.R
 import com.neko.music.data.api.MusicApi
 import com.neko.music.data.manager.SearchHistoryManager
@@ -68,6 +69,20 @@ fun SearchResultScreen(
     onPlaylistClick: (Int, String, String?, String?, String?, Int?) -> Unit = { _, _, _, _, _, _ -> },
     onArtistClick: (String, Int, String?) -> Unit = { _, _, _ -> }
 ) {
+    // Preload strings
+    val singleText = stringResource(id = R.string.single)
+    val playlistText = stringResource(id = R.string.playlist)
+    val artistText = stringResource(id = R.string.artist)
+    val searchFailedText = stringResource(id = R.string.search_failed)
+    val noSearchMusicText = stringResource(id = R.string.no_search_music)
+    val noSearchPlaylistText = stringResource(id = R.string.no_search_playlist)
+    val noSearchArtistText = stringResource(id = R.string.no_search_artist)
+    val noSearchHistoryYetText = stringResource(id = R.string.no_search_history_yet)
+    val noDescriptionNyaText = stringResource(id = R.string.no_description_nya)
+    val songsCountText = stringResource(id = R.string.songs_count, 0)
+    val authorPrefixText = stringResource(id = R.string.author_prefix, "")
+    val songsCountSuffixText = stringResource(id = R.string.songs_count_suffix, 0)
+    
     val context = LocalContext.current
     val historyManager = remember { SearchHistoryManager(context) }
     var searchQuery by remember { mutableStateOf(initialQuery) }
@@ -168,17 +183,17 @@ fun SearchResultScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             SearchTypeButton(
-                text = "单曲",
+                text = singleText,
                 isSelected = searchType == "music",
                 onClick = { searchType = "music" }
             )
             SearchTypeButton(
-                text = "歌单",
+                text = playlistText,
                 isSelected = searchType == "playlist",
                 onClick = { searchType = "playlist" }
             )
             SearchTypeButton(
-                text = "歌手",
+                text = artistText,
                 isSelected = searchType == "artist",
                 onClick = { searchType = "artist" }
             )
@@ -204,7 +219,7 @@ fun SearchResultScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = errorMessage ?: "搜索失败",
+                            text = errorMessage ?: searchFailedText,
                             color = Color.Gray,
                             fontSize = 16.sp
                         )
@@ -229,9 +244,9 @@ fun SearchResultScreen(
                     ) {
                         Text(
                             text = when (searchType) {
-                                "music" -> "未找到相关音乐"
-                                "playlist" -> "未找到相关歌单"
-                                else -> "未找到相关歌手"
+                                "music" -> noSearchMusicText
+                                "playlist" -> noSearchPlaylistText
+                                else -> noSearchArtistText
                             },
                             color = Color.Gray,
                             fontSize = 14.sp
@@ -244,7 +259,7 @@ fun SearchResultScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "还没有搜索历史欸",
+                            text = noSearchHistoryYetText,
                             color = Color.Gray,
                             fontSize = 14.sp
                         )
@@ -284,6 +299,11 @@ fun SearchBar(
     onSearch: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    // Preload strings
+    val backText = stringResource(id = R.string.back)
+    val searchText = stringResource(id = R.string.search)
+    val searchMusicText = stringResource(id = R.string.search_music)
+    
     val isDarkTheme = isSystemInDarkTheme()
     
     Column(
@@ -305,7 +325,7 @@ fun SearchBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "返回",
+                    contentDescription = backText,
                     tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.9f) else MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -333,7 +353,7 @@ fun SearchBar(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "搜索",
+                        contentDescription = searchText,
                         tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.7f) else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
                     )
@@ -366,7 +386,7 @@ fun SearchBar(
                     
                     if (query.isEmpty()) {
                         Text(
-                            text = "搜索音乐",
+                            text = searchMusicText,
                             color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.6f) else Color.Gray,
                             fontSize = 15.sp
                         )
@@ -408,6 +428,12 @@ fun PlaylistItem(
     playlist: com.neko.music.data.api.PlaylistInfo,
     onClick: () -> Unit
 ) {
+    // Preload strings
+    val playlistCoverText = stringResource(id = R.string.playlist_cover)
+    val playlistText = stringResource(id = R.string.playlist)
+    val noDescriptionNyaText = stringResource(id = R.string.no_description_nya)
+    val songsCountFormatText = stringResource(id = R.string.songs_count, playlist.musicCount)
+    
     val isDarkTheme = isSystemInDarkTheme()
     
     Card(
@@ -430,7 +456,7 @@ fun PlaylistItem(
             if (!playlist.coverPath.isNullOrEmpty()) {
                 coil.compose.AsyncImage(
                     model = playlist.coverPath,
-                    contentDescription = "歌单封面",
+                    contentDescription = playlistCoverText,
                     modifier = Modifier
                         .size(56.dp)
                         .clip(RoundedCornerShape(8.dp)),
@@ -449,7 +475,7 @@ fun PlaylistItem(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Info,
-                        contentDescription = "歌单",
+                        contentDescription = playlistText,
                         tint = RoseRed,
                         modifier = Modifier.size(28.dp)
                     )
@@ -470,14 +496,14 @@ fun PlaylistItem(
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Text(
-                    text = playlist.description ?: "暂时没有描述Nya！",
+                    text = playlist.description ?: noDescriptionNyaText,
                     fontSize = 12.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                     maxLines = 1,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${playlist.musicCount} 首音乐",
+                    text = songsCountFormatText,
                     fontSize = 11.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.7f) else Color.Gray
                 )
@@ -510,6 +536,10 @@ fun MusicItem(
     music: Music,
     onClick: () -> Unit
 ) {
+    // Preload strings
+    val coverText = stringResource(id = R.string.content_description_cover)
+    val authorPrefixText = stringResource(id = R.string.author_prefix, music.artist)
+    
     val context = LocalContext.current
     val musicApi = remember { MusicApi(context) }
     val scope = rememberCoroutineScope()
@@ -547,7 +577,7 @@ fun MusicItem(
             if (!coverUrl.isNullOrEmpty()) {
                 coil.compose.AsyncImage(
                     model = coverUrl,
-                    contentDescription = "封面",
+                    contentDescription = coverText,
                     modifier = Modifier.size(44.dp),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )
@@ -575,7 +605,7 @@ fun MusicItem(
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = "作者：${music.artist}",
+                text = authorPrefixText,
                 fontSize = 13.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                 maxLines = 1
@@ -590,6 +620,10 @@ fun SearchHistoryList(
     onItemClick: (String) -> Unit,
     onClearClick: () -> Unit
 ) {
+    // Preload strings
+    val searchHistoryText = stringResource(id = R.string.search_history)
+    val clearHistoryText = stringResource(id = R.string.clear_history)
+    
     val isDarkTheme = isSystemInDarkTheme()
     
     Column(
@@ -610,12 +644,12 @@ fun SearchHistoryList(
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = "搜索历史",
+                    contentDescription = searchHistoryText,
                     tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(20.dp)
                 )
                 Text(
-                    text = "搜索历史",
+                    text = searchHistoryText,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.9f) else MaterialTheme.colorScheme.onSurfaceVariant
@@ -628,7 +662,7 @@ fun SearchHistoryList(
             ) {
                 Icon(
                     imageVector = Icons.Default.Clear,
-                    contentDescription = "清除历史",
+                    contentDescription = clearHistoryText,
                     tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(18.dp)
                 )
@@ -915,6 +949,9 @@ fun ArtistItem(
     artist: com.neko.music.data.model.Artist,
     onClick: () -> Unit
 ) {
+    // Preload strings
+    val songsCountSuffixText = stringResource(id = R.string.songs_count_suffix, artist.musicCount)
+    
     val isDarkTheme = isSystemInDarkTheme()
     
     Card(
@@ -946,7 +983,7 @@ fun ArtistItem(
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${artist.musicCount} 首歌曲",
+                    text = songsCountSuffixText,
                     fontSize = 12.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                 )

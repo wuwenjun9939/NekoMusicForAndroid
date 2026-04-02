@@ -246,7 +246,7 @@ fun MineHeader(
                             .data("https://music.cnmsb.xin/api/user/avatar/$userId?t=$avatarUpdateTime")
                             .crossfade(true)
                             .build(),
-                        contentDescription = "用户头像",
+                        contentDescription = stringResource(id = R.string.user_avatar),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -256,7 +256,7 @@ fun MineHeader(
                             .data("https://music.cnmsb.xin/api/user/avatar/default")
                             .crossfade(true)
                             .build(),
-                        contentDescription = "默认头像",
+                        contentDescription = stringResource(id = R.string.default_avatar),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )

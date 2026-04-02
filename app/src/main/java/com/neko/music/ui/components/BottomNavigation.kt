@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,11 +41,11 @@ import kotlin.math.sin
 
 sealed class BottomNavItem(
     val route: String,
-    val title: String
+    val titleResId: Int
 ) {
-    object Home : BottomNavItem("home", "首页")
-    object Mine : BottomNavItem("mine", "我的")
-    object MyPlaylists : BottomNavItem("my_playlists", "我的歌单")
+    object Home : BottomNavItem("home", R.string.nav_home)
+    object Mine : BottomNavItem("mine", R.string.nav_mine)
+    object MyPlaylists : BottomNavItem("my_playlists", R.string.nav_my_playlists)
 }
 
 @Composable
@@ -189,7 +190,7 @@ fun BottomNavigationBar(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = item.title,
+                            text = stringResource(id = item.titleResId),
                             fontSize = 15.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                             color = if (isSelected) {
@@ -345,7 +346,7 @@ fun MiniPlayer(
                             if (!coverUrl.isNullOrEmpty()) {
                                 AsyncImage(
                                     model = coverUrl,
-                                    contentDescription = "Cover",
+                                    contentDescription = stringResource(id = R.string.content_description_cover),
                                     modifier = Modifier.fillMaxSize(),
                                     contentScale = androidx.compose.ui.layout.ContentScale.Crop
                                 )
@@ -364,7 +365,7 @@ fun MiniPlayer(
                             verticalArrangement = Arrangement.Center
                         ) {
                             Text(
-                                text = songTitle.ifEmpty { "暂无播放" },
+                                text = songTitle.ifEmpty { stringResource(id = R.string.player_no_music) },
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black,
@@ -372,7 +373,7 @@ fun MiniPlayer(
                                 overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = artist.ifEmpty { "点击播放音乐" },
+                                text = artist.ifEmpty { stringResource(id = R.string.player_click_to_play) },
                                 fontSize = 13.sp,
                                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.85f) else Color.Gray,
                                 maxLines = 1,
@@ -453,7 +454,7 @@ fun MiniPlayer(
                                     painter = painterResource(
                                         id = if (isPlaying) R.drawable.pause else R.drawable.play
                                     ),
-                                    contentDescription = if (isPlaying) "Pause" else "Play",
+                                    contentDescription = if (isPlaying) stringResource(id = R.string.content_description_pause) else stringResource(id = R.string.content_description_play),
                                     tint = Color.White,
                                     modifier = Modifier.size(20.dp)
                                 )
@@ -471,7 +472,7 @@ fun MiniPlayer(
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.playlist),
-                                contentDescription = "Playlist",
+                                contentDescription = stringResource(id = R.string.content_description_playlist),
                                 tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.9f) else Color.Gray,
                                 modifier = Modifier.size(22.dp)
                             )

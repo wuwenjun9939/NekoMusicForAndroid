@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -65,6 +66,10 @@ fun LoginScreen(
     val tokenManager = com.neko.music.data.manager.TokenManager(context)
     val userApi = com.neko.music.data.api.UserApi()
 
+    // Preload string resources for non-Composable contexts
+    val pleaseEnterEmailAndPassword = stringResource(id = R.string.please_enter_email_and_password)
+    val loginFailed = stringResource(id = R.string.login_failed)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +102,7 @@ fun LoginScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "返回",
+                    contentDescription = stringResource(id = R.string.back),
                     tint = Color.White
                 )
             }
@@ -118,14 +123,14 @@ fun LoginScreen(
 
             // 标题
             Text(
-                text = "Neko 云音乐",
+                text = stringResource(id = R.string.app_title),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
 
             Text(
-                text = "欢迎回来",
+                text = stringResource(id = R.string.welcome_back),
                 fontSize = 16.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 8.dp)
@@ -146,11 +151,11 @@ fun LoginScreen(
                         username = it
                         errorMessage = ""
                     },
-                    label = { Text("邮箱") },
+                    label = { Text(stringResource(id = R.string.email)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Email,
-                            contentDescription = "用户名",
+                            contentDescription = stringResource(id = R.string.username),
                             tint = Color.Gray
                         )
                     },
@@ -182,11 +187,11 @@ fun LoginScreen(
                         password = it
                         errorMessage = ""
                     },
-                    label = { Text("密码") },
+                    label = { Text(stringResource(id = R.string.password)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = "密码",
+                            contentDescription = stringResource(id = R.string.password),
                             tint = Color.Gray
                         )
                     },
@@ -230,7 +235,7 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         if (username.isEmpty() || password.isEmpty()) {
-                            errorMessage = "请输入邮箱和密码"
+                            errorMessage = pleaseEnterEmailAndPassword
                             return@Button
                         }
 
@@ -254,7 +259,7 @@ fun LoginScreen(
                                 }
                             } catch (e: Exception) {
                                 isLoading = false
-                                errorMessage = "登录失败: ${e.message}"
+                                errorMessage = loginFailed.format(e.message ?: "")
                             }
                         }
                     },
@@ -274,7 +279,7 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            text = "登录",
+                            text = stringResource(id = R.string.login),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -294,14 +299,14 @@ fun LoginScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "还没有账号？",
+                        text = stringResource(id = R.string.no_account_yet),
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     TextButton(onClick = onRegisterClick) {
                         Text(
-                            text = "立即注册",
+                            text = stringResource(id = R.string.register_now),
                             color = Color(0xFFE94560),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold

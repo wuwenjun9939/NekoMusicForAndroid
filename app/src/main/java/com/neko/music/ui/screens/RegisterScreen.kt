@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -72,6 +73,16 @@ fun RegisterScreen(
     val scope = rememberCoroutineScope()
     val userApi = com.neko.music.data.api.UserApi()
 
+    // Preload string resources for non-Composable contexts
+    val pleaseFillAllFields = stringResource(id = R.string.please_fill_all_fields)
+    val usernameLengthError = stringResource(id = R.string.username_length_error)
+    val passwordLengthError = stringResource(id = R.string.password_length_error)
+    val passwordMismatch = stringResource(id = R.string.password_mismatch)
+    val emailFormatError = stringResource(id = R.string.email_format_error)
+    val registerFailed = stringResource(id = R.string.register_failed)
+    val pleaseEnterEmailFirst = stringResource(id = R.string.please_enter_email_first)
+    val sendVerificationCodeFailed = stringResource(id = R.string.send_verification_code_failed)
+
     // 倒计时
     LaunchedEffect(countdown) {
         if (countdown > 0) {
@@ -112,7 +123,7 @@ fun RegisterScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "返回",
+                    contentDescription = stringResource(id = R.string.back),
                     tint = Color.White
                 )
             }
@@ -134,14 +145,14 @@ fun RegisterScreen(
 
             // 标题
             Text(
-                text = "Neko 云音乐",
+                text = stringResource(id = R.string.app_title),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
 
             Text(
-                text = "创建新账号",
+                text = stringResource(id = R.string.create_new_account),
                 fontSize = 16.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 8.dp)
@@ -162,11 +173,11 @@ fun RegisterScreen(
                         username = it
                         errorMessage = ""
                     },
-                    label = { Text("用户名") },
+                    label = { Text(stringResource(id = R.string.username)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Person,
-                            contentDescription = "用户名",
+                            contentDescription = stringResource(id = R.string.username),
                             tint = Color.Gray
                         )
                     },
@@ -198,11 +209,11 @@ fun RegisterScreen(
                         email = it
                         errorMessage = ""
                     },
-                    label = { Text("邮箱") },
+                    label = { Text(stringResource(id = R.string.email)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Email,
-                            contentDescription = "邮箱",
+                            contentDescription = stringResource(id = R.string.email),
                             tint = Color.Gray
                         )
                     },
@@ -235,12 +246,12 @@ fun RegisterScreen(
                         verificationCode = it
                         errorMessage = ""
                     },
-                    label = { Text("验证码") },
+                    label = { Text(stringResource(id = R.string.verification_code)) },
                     trailingIcon = {
                         TextButton(
                             onClick = {
                                 if (email.isEmpty()) {
-                                    errorMessage = "请先输入邮箱"
+                                    errorMessage = pleaseEnterEmailFirst
                                     return@TextButton
                                 }
                                 if (countdown > 0) return@TextButton
@@ -258,7 +269,7 @@ fun RegisterScreen(
                                         }
                                     } catch (e: Exception) {
                                         isSendingCode = false
-                                        errorMessage = "发送验证码失败: ${e.message}"
+                                        errorMessage = sendVerificationCodeFailed.format(e.message ?: "")
                                     }
                                 }
                             },
@@ -271,7 +282,7 @@ fun RegisterScreen(
                                 )
                             } else {
                                 Text(
-                                    text = if (countdown > 0) "${countdown}秒后重试" else "获取验证码",
+                                    text = if (countdown > 0) stringResource(id = R.string.retry_after_seconds, countdown) else stringResource(id = R.string.send_verification_code),
                                     color = if (countdown > 0) Color.Gray else Color(0xFFE94560),
                                     fontSize = 12.sp
                                 )
@@ -306,11 +317,11 @@ fun RegisterScreen(
                         password = it
                         errorMessage = ""
                     },
-                    label = { Text("密码") },
+                    label = { Text(stringResource(id = R.string.password)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = "密码",
+                            contentDescription = stringResource(id = R.string.password),
                             tint = Color.Gray
                         )
                     },
@@ -344,11 +355,11 @@ fun RegisterScreen(
                         confirmPassword = it
                         errorMessage = ""
                     },
-                    label = { Text("确认密码") },
+                    label = { Text(stringResource(id = R.string.confirm_password)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = "确认密码",
+                            contentDescription = stringResource(id = R.string.confirm_password),
                             tint = Color.Gray
                         )
                     },
@@ -392,28 +403,28 @@ fun RegisterScreen(
                 Button(
                     onClick = {
                         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || verificationCode.isEmpty()) {
-                            errorMessage = "请填写所有字段"
+                            errorMessage = pleaseFillAllFields
                             return@Button
                         }
 
                         if (username.length < 3 || username.length > 20) {
-                            errorMessage = "用户名长度必须在3-20个字符之间"
+                            errorMessage = usernameLengthError
                             return@Button
                         }
 
                         if (password.length < 6 || password.length > 30) {
-                            errorMessage = "密码长度必须在6-30个字符之间"
+                            errorMessage = passwordLengthError
                             return@Button
                         }
 
                         if (password != confirmPassword) {
-                            errorMessage = "两次输入的密码不一致"
+                            errorMessage = passwordMismatch
                             return@Button
                         }
 
                         // 简单的邮箱格式验证
                         if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))) {
-                            errorMessage = "邮箱格式不正确"
+                            errorMessage = emailFormatError
                             return@Button
                         }
 
@@ -431,7 +442,7 @@ fun RegisterScreen(
                                 }
                             } catch (e: Exception) {
                                 isLoading = false
-                                errorMessage = "注册失败: ${e.message}"
+                                errorMessage = registerFailed.format(e.message ?: "")
                             }
                         }
                     },
@@ -451,7 +462,7 @@ fun RegisterScreen(
                         )
                     } else {
                         Text(
-                            text = "注册",
+                            text = stringResource(id = R.string.register),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -471,14 +482,14 @@ fun RegisterScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "已有账号？",
+                        text = stringResource(id = R.string.already_have_account),
                         color = Color.Gray,
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     TextButton(onClick = onLoginClick) {
                         Text(
-                            text = "立即登录",
+                            text = stringResource(id = R.string.login_now),
                             color = Color(0xFFE94560),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold

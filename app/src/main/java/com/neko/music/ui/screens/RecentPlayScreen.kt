@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.neko.music.R
 import com.neko.music.data.model.Music
@@ -104,7 +105,7 @@ fun RecentPlayScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "返回",
+                    contentDescription = stringResource(id = R.string.back),
                     tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.9f) else Color.Black
                 )
             }
@@ -144,7 +145,7 @@ fun RecentPlayScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (searchQuery.isEmpty()) "欸？暂时没有播放记录欸" else "没有找到相关歌曲喵",
+                    text = if (searchQuery.isEmpty()) stringResource(id = R.string.no_play_history) else stringResource(id = R.string.no_related_songs),
                     fontSize = 16.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                 )
@@ -283,7 +284,7 @@ fun SearchBar(
     ) {
         Icon(
             imageVector = Icons.Default.Search,
-            contentDescription = "搜索",
+            contentDescription = stringResource(id = R.string.search),
             tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.7f) else Color.Gray,
             modifier = Modifier.size(20.dp)
         )
@@ -300,7 +301,7 @@ fun SearchBar(
             decorationBox = { innerTextField ->
                 if (query.isEmpty()) {
                     Text(
-                        text = "搜索歌曲",
+                        text = stringResource(id = R.string.search_songs),
                         fontSize = 14.sp,
                         color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.6f) else Color.Gray
                     )

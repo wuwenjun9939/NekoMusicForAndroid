@@ -81,4 +81,322 @@
     <string name="cancel">Cancel</string>
     <string name="loading">Loading…</string>
     <string name="error">Error</string>
+    <string name="success">Success</string>
+
+    <!-- Login Related -->
+    <string name="app_title">Neko Cloud Music</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="please_enter_email_and_password">Please enter email and password</string>
+    <string name="no_account_yet">Don\'t have an account yet?</string>
+    <string name="register_now">Register Now</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="register_failed">Registration failed: %s</string>
+    <string name="send_verification_code">Get Verification Code</string>
+    <string name="retry_after_seconds">Retry in %d seconds</string>
+    <string name="send_verification_code_failed">Failed to send verification code: %s</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+    <string name="username_length_error">Username length must be 3-20 characters</string>
+    <string name="password_length_error">Password length must be 6-30 characters</string>
+    <string name="password_mismatch">Passwords do not match</string>
+    <string name="email_format_error">Email format is incorrect</string>
+    <string name="please_enter_email_first">Please enter email first</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="verification_code">Verification Code</string>
+    <string name="register">Register</string>
+    <string name="drag_scale_avatar">Drag and scale image to select avatar area</string>
+    <string name="complete">Complete</string>
+    <string name="more">More</string>
+    <string name="downloading_update_progress">Downloading Update</string>
+    <string name="downloading_update_failed">Download failed, please try again later</string>
+    <string name="downloading_update_failed_msg">Download failed: %s</string>
+    <string name="new_version_found">New Version Available</string>
+    <string name="new_version">New Version: %s</string>
+    <string name="version_code_display">Version Code: %d</string>
+    <string name="later">Later</string>
+    <string name="download_complete">Download Complete</string>
+    <string name="update_failed_msg">❌ Update Failed</string>
+
+
+    <!-- Account Info -->
+    <string name="account_info">Account Info</string>
+    <string name="avatar">Avatar</string>
+    <string name="user_avatar">User Avatar</string>
+    <string name="default_avatar">Default Avatar</string>
+    <string name="change_avatar">Change Avatar</string>
+    <string name="change_avatar_confirm">Would you like to select a new avatar from gallery?</string>
+    <string name="click_avatar_to_change">Click avatar to change it</string>
+    <string name="modify_password">Change Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="please_enter_old_password">Please enter old password</string>
+    <string name="please_enter_new_password">Please enter new password</string>
+    <string name="please_confirm_new_password">Please confirm new password</string>
+    <string name="new_password_length_error">New password must be at least 6 characters</string>
+    <string name="modifying">Modifying...</string>
+    <string name="show_password">Show Password</string>
+    <string name="hide_password">Hide Password</string>
+    <string name="operation_success">Operation Successful</string>
+    <string name="avatar_update_success">Avatar Updated Successfully</string>
+    <string name="crop_avatar">Crop Avatar</string>
+    <string name="password_update_success">Password Changed Successfully</string>
+    <string name="password_update_failed">Failed to change password: %s</string>
+
+    <!-- Player -->
+    <string name="click_cover_show_lyrics">Click cover to view lyrics</string>
+    <string name="no_lyrics">No lyrics available</string>
+    <string name="list_loop">List Loop</string>
+    <string name="single_loop">Single Loop</string>
+    <string name="shuffle_play">Shuffle</string>
+    <string name="share">Share</string>
+    <string name="copy_link">Copy Link</string>
+    <string name="link_copied">Link copied</string>
+    <string name="copy_failed">Copy failed</string>
+    <string name="download">Download</string>
+    <string name="download_success">Download successful</string>
+    <string name="download_failed">Download failed: %s</string>
+    <string name="share_to_twitter">Share to Twitter</string>
+    <string name="share_failed">Share failed</string>
+    <string name="playback_speed">Playback Speed</string>
+    <string name="playback_speed_x">Speed: %dx</string>
+    <string name="sleep_timer">Sleep Timer</string>
+    <string name="sleep_timer_cancelled">Sleep timer cancelled</string>
+    <string name="sleep_timer_hours_minutes">Close after %dh %dm</string>
+    <string name="sleep_timer_hours">Close after %dh</string>
+    <string name="sleep_timer_minutes">Close after %dm</string>
+    <string name="add_to_playlist">Add to Playlist</string>
+    <string name="added_to_playlist">Added to %s</string>
+    <string name="create_playlist">Create Playlist</string>
+    <string name="playlist_name">Playlist Name</string>
+    <string name="create_success">Created successfully</string>
+    <string name="please_login_first_short">Please login first</string>
+    <string name="add_failed">Failed to add: %s</string>
+    <string name="unknown_song">Unknown Song</string>
+    <string name="unknown_artist">Unknown Artist</string>
+    <string name="no_current_play">Not Playing</string>
+    <string name="please_login_to_favorite">Please login first</string>
+    <string name="play_all_count">Play All (%d)</string>
+
+    <!-- Search -->
+    <string name="search">Search</string>
+    <string name="search_music">Search Music</string>
+    <string name="search_music_artist_album">Search music, artists, albums...</string>
+    <string name="single">Single</string>
+    <string name="playlist">Playlist</string>
+    <string name="artist">Artist</string>
+    <string name="search_failed">Search failed</string>
+    <string name="no_search_music">No music found</string>
+    <string name="no_search_playlist">No playlists found</string>
+    <string name="no_search_artist">No artists found</string>
+    <string name="no_search_history_yet">No search history yet</string>
+    <string name="search_history">Search History</string>
+    <string name="clear_history">Clear History</string>
+    <string name="no_description_nya">No description yet Nya!</string>
+    <string name="songs_count">%d songs</string>
+    <string name="author_prefix">Artist: %s</string>
+
+    <!-- Latest Music -->
+    <string name="latest_music">Latest Music</string>
+    <string name="loading_latest_music">Loading latest music...</string>
+    <string name="load_failed">Load Failed</string>
+    <string name="network_error">Network connection seems to have problems</string>
+    <string name="retry">Retry</string>
+    <string name="no_latest_music">No latest music</string>
+    <string name="just_now">Just now</string>
+    <string name="minutes_ago">%dm ago</string>
+    <string name="hours_ago">%dh ago</string>
+    <string name="days_ago">%dd ago</string>
+    <string name="play_all_failed">Play all failed</string>
+    <string name="play_failed">Play failed</string>
+
+    <!-- Uploaded Music -->
+    <string name="loading_data">Loading...</string>
+    <string name="get_data_failed">Failed to get data: %s</string>
+    <string name="album_cover">Album Cover</string>
+    <string name="music_note">Music</string>
+    <string name="empty">Empty</string>
+
+    <!-- Playlist Detail -->
+    <string name="playlist_cover">Playlist Cover</string>
+    <string name="no_description_click_to_edit">No description, click to edit Nya!</string>
+    <string name="creator">Creator</string>
+    <string name="creator_id">Creator ID</string>
+    <string name="creator_avatar">Creator Avatar</string>
+    <string name="creator_with_name">Creator: %s</string>
+    <string name="no_songs">No songs</string>
+    <string name="edit_playlist_description">Edit Playlist Description</string>
+    <string name="enter_playlist_description">Enter playlist description</string>
+    <string name="description_updated">Description updated</string>
+    <string name="description_update_failed">Update failed: %s</string>
+    <string name="removed_from_playlist">Removed from playlist</string>
+    <string name="remove_failed">Remove failed: %s</string>
+    <string name="load_playlist_failed">Load failed: %s</string>
+    <string name="add_favorite_success">Added to favorites</string>
+    <string name="remove_favorite_success">Removed from favorites</string>
+    <string name="operation_failed">Operation failed: %s</string>
+
+    <!-- Home -->
+    <string name="explore_music_world">Explore Music World</string>
+    <string name="discover_music_you_like">Discover Music You Like</string>
+    <string name="recommended_playlists">Recommended Playlists</string>
+    <string name="network_error_msg">Network Error</string>
+    <string name="play_all">Play All</string>
+    <string name="go_discover">Go discover music you like</string>
+    <string name="try_other_keywords">Try other keywords</string>
+    <string name="search_box_clicked">Search box clicked</string>
+    <string name="loading_recommended">Loading recommended playlists...</string>
+    <string name="loading_ranking">Loading hot music...</string>
+    <string name="loading_latest">Loading latest music...</string>
+    <string name="recommended_loaded">Recommended playlists loaded: %d</string>
+    <string name="recommended_failed">Failed to load recommended playlists: %s</string>
+    <string name="ranking_loaded">Hot music loaded: %d songs</string>
+    <string name="ranking_failed">Failed to load hot music: %s</string>
+    <string name="latest_loaded">Latest music loaded: %d songs</string>
+    <string name="latest_failed">Failed to load latest music: %s</string>
+    <string name="check_update_failed">Check update failed</string>
+    <string name="download_update_failed">Download update failed</string>
+    <string name="download_update_retry">Download failed, please try again later</string>
+    <string name="download_update_failed_msg">Download failed: %s</string>
+    <string name="check_update_failed_msg">Check update failed: %s</string>
+    <string name="recommended_playlists_exception">Recommended playlists exception: %s</string>
+    <string name="installing_update">Installing update...</string>
+    <string name="update_dialog">New Version Available</string>
+    <string name="version_code">Version Code: %d</string>
+
+    <!-- Playlist -->
+    <string name="no_description">No description</string>
+
+    <!-- Notification Permission -->
+    <string name="notification_permission_title">Notification Permission Required</string>
+    <string name="notification_permission_message">To remind you when sleep timer ends,\nnotification permission is required</string>
+    <string name="authorize">Authorize</string>
+
+    <!-- Player -->
+    <string name="now_playing">Now Playing</string>
+    <string name="cover">Cover</string>
+    <string name="create_new">Create New</string>
+    <string name="custom">Custom</string>
+    <string name="close">Close</string>
+    <string name="custom_sleep_timer">Custom Sleep Timer</string>
+    <string name="hours">Hours</string>
+    <string name="minutes">Minutes</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase">Increase</string>
+
+    <!-- About Page -->
+    <string name="unknown_version">Unknown Version</string>
+    <string name="unknown">Unknown</string>
+    <string name="app_info">App Info</string>
+    <string name="app_name_label">App Name</string>
+    <string name="version_number">Version Number</string>
+    <string name="version_code_label">Version Code</string>
+    <string name="package_name">Package Name</string>
+    <string name="organization_info">Organization Info</string>
+    <string name="organization_name">Organization Name</string>
+    <string name="contact_info">Contact Info</string>
+    <string name="tech_stack">Tech Stack</string>
+    <string name="programming_language">Programming Language</string>
+    <string name="ui_framework">UI Framework</string>
+    <string name="network_request">Network Request</string>
+    <string name="audio_playback">Audio Playback</string>
+    <string name="local_database">Local Database</string>
+    <string name="image_loading">Image Loading</string>
+    <string name="copyright_info">Copyright Info</string>
+    <string name="icp_license">蜀ICP备2025177767号-1</string>
+    <string name="copyright_contact">For copyright issues contact support@cnmsb.xin</string>
+    <string name="copyright_text">© 2025-2026 Fantasy Network</string>
+    <string name="all_rights_reserved">All Rights Reserved</string>
+
+    <!-- Artist Detail -->
+    <string name="artist_detail">Artist Detail</string>
+    <string name="no_music_found">No music found</string>
+    <string name="songs_count_suffix">%d songs</string>
+
+    <!-- Cache Management -->
+    <string name="no_cache">No cache yet</string>
+    <string name="cache_hint">Music will be cached automatically after playing</string>
+    <string name="cache_statistics">Cache Statistics</string>
+    <string name="cached_songs_count">%d songs cached</string>
+    <string name="cache_size">Space used: %s</string>
+    <string name="preparing_playlist">Preparing playlist...</string>
+    <string name="cache_list">Cache List</string>
+    <string name="clear_all_cache">Clear All</string>
+    <string name="delete_cache">Delete Cache</string>
+    <string name="confirm_clear_all_cache">Are you sure to clear all cache?</string>
+    <string name="clear_all_cache_info">This will delete cache of %d songs</string>
+    <string name="free_space">Free space: %s</string>
+    <string name="confirm_delete_cache">Are you sure to delete this song cache?</string>
+    <string name="clear">Clear</string>
+    <string name="delete">Delete</string>
+    <string name="id_label">ID: %s</string>
+
+    <!-- Discover -->
+    <string name="discover">Discover</string>
+    <string name="hot_ranking">Hot Ranking</string>
+    <string name="ranking_number">Ranking %d</string>
+
+    <!-- Ranking -->
+    <string name="hot_music">Hot Music</string>
+    <string name="loading_hot_music">Loading hot music...</string>
+    <string name="no_hot_music">No hot music</string>
+
+    <!-- Playlist -->
+    <string name="playback_list">Playlist</string>
+    <string name="playlist_empty">Playlist is empty</string>
+
+    <!-- Recent Play -->
+    <string name="no_play_history">Hmm? No play history yet</string>
+    <string name="no_related_songs">No related songs found meow</string>
+    <string name="search_songs">Search songs</string>
+
+    <!-- My Playlists -->
+    <string name="no_playlists_yet">No playlists yet</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="edit_playlist">Edit Playlist</string>
+    <string name="create_playlist_dialog">Create Playlist</string>
+    <string name="loading_failed">Load failed: %s</string>
+    <string name="delete_failed_msg">Delete failed: %s</string>
+    <string name="my_favorites_label">My Favorites</string>
+    <string name="loading_data_failed">Loading failed: %s</string>
+    <string name="refresh_failed">Refresh failed: %s</string>
+
+    <!-- Playlist Detail -->
+    <string name="songs_count_label">%d songs</string>
+    <string name="edit_description">Edit Playlist Description</string>
+    <string name="enter_description">Enter playlist description</string>
+    <string name="description_updated_success">Description updated</string>
+    <string name="description_update_failed_msg">Update failed: %s</string>
+    <string name="remove_from_playlist_success">Removed from playlist</string>
+    <string name="remove_from_playlist_failed">Remove failed: %s</string>
+    <string name="load_failed_msg">Load failed: %s</string>
+    <string name="add_to_favorites_success">Added to favorites</string>
+    <string name="remove_from_favorites_success">Removed from favorites</string>
+    <string name="operation_failed_msg">Operation failed: %s</string>
+    <string name="share_song">Share</string>
+    <string name="favorite_song">Favorite</string>
+    <string name="unfavorite_song">Unfavorite</string>
+    <string name="creator_info">Creator: %s</string>
+    <string name="creator_id_info">Creator ID: %d</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_mine">Mine</string>
+    <string name="nav_my_playlists">My Playlists</string>
+
+    <!-- Player -->
+    <string name="player_no_music">Not Playing</string>
+    <string name="player_click_to_play">Click to play music</string>
+    <string name="content_description_cover">Cover</string>
+    <string name="content_description_pause">Pause</string>
+    <string name="content_description_play">Play</string>
+    <string name="content_description_playlist">Playlist</string>
+
+    <!-- Home -->
+    <string name="hot_music_desc">Most played songs</string>
+    <string name="songs_count_short">%d songs</string>
+    <string name="play_count">%d plays</string>
 </resources>

@@ -195,8 +195,8 @@ fun SettingsScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
-                            Icons.Default.ArrowBack, 
-                            contentDescription = "返回",
+                            Icons.Default.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back),
                             tint = if (isSystemInDarkTheme()) Color(0xFFB8B8D1).copy(alpha = 0.9f) else Color.Black
                         )
                     }
@@ -322,7 +322,7 @@ fun SettingsScreen(
                     SettingItem(
                         icon = Icons.Default.Info,
                         title = stringResource(id = R.string.language),
-                        subtitle = getLanguageDisplayName(currentLanguage),
+                        subtitle = getLanguageDisplayName(context, currentLanguage),
                         onClick = { showLanguageDialog = true }
                     )
                 }
@@ -520,7 +520,7 @@ fun SettingItem(
                 } else {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = "更多",
+                        contentDescription = stringResource(id = R.string.more),
                         tint = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                         modifier = Modifier.size(20.dp)
                     )
@@ -545,7 +545,7 @@ fun SettingsUpdateDialog(
         onDismiss: () -> Unit
     ) {
     val isDarkTheme = isSystemInDarkTheme()
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -560,7 +560,7 @@ fun SettingsUpdateDialog(
                 )
                 Spacer(modifier = Modifier.width(8.dp)) // 给图标和文字留点小缝隙
                 Text(
-                    text = "发现新版本",
+                    text = stringResource(id = R.string.new_version_found),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = RoseRed
@@ -570,13 +570,13 @@ fun SettingsUpdateDialog(
         text = {
             Column {
                 Text(
-                    text = "新版本：$versionName",
+                    text = stringResource(id = R.string.new_version, versionName),
                     fontSize = 16.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "版本号：$versionCode",
+                    text = stringResource(id = R.string.version_code_display, versionCode),
                     fontSize = 16.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                 )
@@ -591,7 +591,7 @@ fun SettingsUpdateDialog(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "立即更新",
+                    text = stringResource(id = R.string.update_now),
                     fontSize = 16.sp,
                     color = Color.White
                 )
@@ -600,7 +600,7 @@ fun SettingsUpdateDialog(
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(
-                    text = "稍后",
+                    text = stringResource(id = R.string.later),
                     fontSize = 16.sp,
                     color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray
                 )
@@ -616,12 +616,12 @@ fun SettingsDownloadProgressDialog(
         onDismiss: () -> Unit
     ) {
     val isDarkTheme = isSystemInDarkTheme()
-    
+
     AlertDialog(
         onDismissRequest = { },
         title = {
             Text(
-                text = "正在下载更新",
+                text = stringResource(id = R.string.downloading_update_progress),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = RoseRed
@@ -652,12 +652,13 @@ fun SettingsDownloadProgressDialog(
     )
 
 }
+
 @Composable
 fun SettingsUpdateSuccessDialog(
         onDismiss: () -> Unit
     ) {
     val isDarkTheme = isSystemInDarkTheme()
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -671,7 +672,7 @@ fun SettingsUpdateSuccessDialog(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "下载完成",
+                    text = stringResource(id = R.string.download_complete),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (isDarkTheme) Color(0xFFF0F0F5).copy(alpha = 0.95f) else Color.Black
@@ -680,7 +681,7 @@ fun SettingsUpdateSuccessDialog(
         },
         text = {
             Text(
-                text = "正在安装更新...",
+                text = stringResource(id = R.string.installing_update),
                 fontSize = 16.sp,
                 color = if (isDarkTheme) Color(0xFFB8B8D1).copy(alpha = 0.8f) else Color.Gray,
                 modifier = Modifier.fillMaxWidth(),
@@ -690,19 +691,20 @@ fun SettingsUpdateSuccessDialog(
         confirmButton = {},
         containerColor = if (isDarkTheme) Color(0xFF1A1A2E).copy(alpha = 0.95f) else Color.White
     )
-    }
+}
+
 @Composable
 fun SettingsUpdateErrorDialog(
         message: String,
         onDismiss: () -> Unit
     ) {
     val isDarkTheme = isSystemInDarkTheme()
-    
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "❌ 更新失败",
+                text = stringResource(id = R.string.update_failed_msg),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFF44336)
@@ -718,7 +720,7 @@ fun SettingsUpdateErrorDialog(
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text(
-                    text = "确定",
+                    text = stringResource(id = R.string.confirm),
                     fontSize = 16.sp,
                     color = RoseRed
                 )
@@ -884,11 +886,11 @@ fun LanguageSelectionDialog(
     )
 }
 
-fun getLanguageDisplayName(language: String): String {
+fun getLanguageDisplayName(context: Context, language: String): String {
     return when (language) {
-        "system" -> "跟随系统"
-        "zh" -> "简体中文"
-        "en" -> "English"
-        else -> "跟随系统"
+        "system" -> context.getString(R.string.language_follow_system)
+        "zh" -> context.getString(R.string.language_zh)
+        "en" -> context.getString(R.string.language_en)
+        else -> context.getString(R.string.language_follow_system)
     }
 }

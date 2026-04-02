@@ -23,12 +23,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.neko.music.R
 import com.neko.music.data.api.MusicApi
 import com.neko.music.data.model.Music
 import com.neko.music.service.MusicPlayerManager
@@ -105,7 +107,7 @@ fun RankingScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "热门音乐",
+                        text = stringResource(id = R.string.hot_music),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = if (isDarkMode) Color.White.copy(alpha = 0.95f) else RoseRed
@@ -115,7 +117,7 @@ fun RankingScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "返回",
+                            contentDescription = stringResource(id = R.string.back),
                             tint = if (isDarkMode) Color.White.copy(alpha = 0.9f) else RoseRed
                         )
                     }
@@ -146,7 +148,7 @@ fun RankingScreen(
                             }
                         ) {
                             Text(
-                                text = "播放全部",
+                                text = stringResource(id = R.string.play_all),
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = if (isDarkMode) Color.White.copy(alpha = 0.9f) else RoseRed
@@ -276,7 +278,7 @@ fun LoadingState() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "正在加载热门音乐...",
+            text = stringResource(id = R.string.loading_hot_music),
             fontSize = 14.sp,
             color = if (isDarkMode) Color.White.copy(alpha = 0.7f) else RoseRed.copy(alpha = 0.7f)
         )
@@ -312,14 +314,14 @@ fun ErrorState(
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "加载失败",
+            text = stringResource(id = R.string.load_failed),
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
             color = if (isDarkMode) Color.White.copy(alpha = 0.95f) else RoseRed
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = "网络连接似乎出现了问题",
+            text = stringResource(id = R.string.network_error),
             fontSize = 14.sp,
             color = if (isDarkMode) Color.White.copy(alpha = 0.6f) else RoseRed.copy(alpha = 0.6f)
         )
@@ -332,7 +334,7 @@ fun ErrorState(
             shape = RoundedCornerShape(20.dp)
         ) {
             Text(
-                text = "重试",
+                text = stringResource(id = R.string.retry),
                 fontSize = 14.sp,
                 color = Color.White
             )
@@ -367,7 +369,7 @@ fun EmptyState() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "暂无热门音乐",
+            text = stringResource(id = R.string.no_hot_music),
             fontSize = 16.sp,
             color = if (isDarkMode) Color.White.copy(alpha = 0.6f) else RoseRed.copy(alpha = 0.6f)
         )

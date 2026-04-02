@@ -81,4 +81,321 @@
     <string name="cancel">取消</string>
     <string name="loading">加载中…</string>
     <string name="error">错误</string>
+    <string name="success">成功</string>
+
+    <!-- 登录相关 -->
+    <string name="app_title">Neko 云音乐</string>
+    <string name="welcome_back">欢迎回来</string>
+    <string name="create_new_account">创建新账号</string>
+    <string name="please_enter_email_and_password">请输入邮箱和密码</string>
+    <string name="no_account_yet">还没有账号？</string>
+    <string name="register_now">立即注册</string>
+    <string name="already_have_account">已有账号？</string>
+    <string name="register_failed">注册失败: %s</string>
+    <string name="send_verification_code">获取验证码</string>
+    <string name="retry_after_seconds">%d秒后重试</string>
+    <string name="send_verification_code_failed">发送验证码失败: %s</string>
+    <string name="please_fill_all_fields">请填写所有字段</string>
+    <string name="username_length_error">用户名长度必须在3-20个字符之间</string>
+    <string name="password_length_error">密码长度必须在6-30个字符之间</string>
+    <string name="password_mismatch">两次输入的密码不一致</string>
+    <string name="email_format_error">邮箱格式不正确</string>
+    <string name="please_enter_email_first">请先输入邮箱</string>
+    <string name="email">邮箱</string>
+    <string name="password">密码</string>
+    <string name="username">用户名</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="verification_code">验证码</string>
+    <string name="register">注册</string>
+    <string name="drag_scale_avatar">拖动和缩放图片以选择头像区域</string>
+    <string name="complete">完成</string>
+    <string name="more">更多</string>
+    <string name="downloading_update_progress">正在下载更新</string>
+    <string name="downloading_update_failed">下载失败，请稍后重试</string>
+    <string name="downloading_update_failed_msg">下载失败：%s</string>
+    <string name="new_version_found">发现新版本</string>
+    <string name="new_version">新版本：%s</string>
+    <string name="version_code_display">版本号：%d</string>
+    <string name="later">稍后</string>
+    <string name="download_complete">下载完成</string>
+    <string name="update_failed_msg">❌ 更新失败</string>>
+
+    <!-- 账号信息 -->
+    <string name="account_info">账号信息</string>
+    <string name="avatar">头像</string>
+    <string name="user_avatar">用户头像</string>
+    <string name="default_avatar">默认头像</string>
+    <string name="change_avatar">更换头像</string>
+    <string name="change_avatar_confirm">是否要从相册选择新头像？</string>
+    <string name="click_avatar_to_change">点击头像可以更换头像</string>
+    <string name="modify_password">修改密码</string>
+    <string name="old_password">原密码</string>
+    <string name="new_password">新密码</string>
+    <string name="confirm_new_password">确认新密码</string>
+    <string name="please_enter_old_password">请输入原密码</string>
+    <string name="please_enter_new_password">请输入新密码</string>
+    <string name="please_confirm_new_password">请确认新密码</string>
+    <string name="new_password_length_error">新密码长度不能少于6位</string>
+    <string name="modifying">修改中...</string>
+    <string name="show_password">显示密码</string>
+    <string name="hide_password">隐藏密码</string>
+    <string name="operation_success">操作成功</string>
+    <string name="avatar_update_success">头像更新成功</string>
+    <string name="crop_avatar">裁剪头像</string>
+    <string name="password_update_success">密码修改成功</string>
+    <string name="password_update_failed">密码修改失败: %s</string>
+
+    <!-- 播放器 -->
+    <string name="click_cover_show_lyrics">点击封面查看歌词</string>
+    <string name="no_lyrics">暂无歌词</string>
+    <string name="list_loop">列表循环</string>
+    <string name="single_loop">单曲循环</string>
+    <string name="shuffle_play">随机播放</string>
+    <string name="share">分享</string>
+    <string name="copy_link">复制链接</string>
+    <string name="link_copied">链接已复制</string>
+    <string name="copy_failed">复制失败</string>
+    <string name="download">下载</string>
+    <string name="download_success">下载成功</string>
+    <string name="download_failed">下载失败: %s</string>
+    <string name="share_to_twitter">分享到Twitter</string>
+    <string name="share_failed">分享失败</string>
+    <string name="playback_speed">倍速</string>
+    <string name="playback_speed_x">倍速: %dx</string>
+    <string name="sleep_timer">定时关闭</string>
+    <string name="sleep_timer_cancelled">定时关闭已取消</string>
+    <string name="sleep_timer_hours_minutes">%d小时%d分钟后关闭</string>
+    <string name="sleep_timer_hours">%d小时后关闭</string>
+    <string name="sleep_timer_minutes">%d分钟后关闭</string>
+    <string name="add_to_playlist">添加到歌单</string>
+    <string name="added_to_playlist">已添加到%s</string>
+    <string name="create_playlist">创建歌单</string>
+    <string name="playlist_name">歌单名称</string>
+    <string name="create_success">创建成功</string>
+    <string name="please_login_first_short">请先登录</string>
+    <string name="add_failed">添加失败: %s</string>
+    <string name="unknown_song">未知歌曲</string>
+    <string name="unknown_artist">未知歌手</string>
+    <string name="no_current_play">暂无播放</string>
+    <string name="please_login_to_favorite">请先登录</string>
+    <string name="play_all_count">播放全部 (%d)</string>
+
+    <!-- 搜索 -->
+    <string name="search">搜索</string>
+    <string name="search_music">搜索音乐</string>
+    <string name="search_music_artist_album">搜索音乐、歌手、专辑...</string>
+    <string name="single">单曲</string>
+    <string name="playlist">歌单</string>
+    <string name="artist">歌手</string>
+    <string name="search_failed">搜索失败</string>
+    <string name="no_search_music">未找到相关音乐</string>
+    <string name="no_search_playlist">未找到相关歌单</string>
+    <string name="no_search_artist">未找到相关歌手</string>
+    <string name="no_search_history_yet">还没有搜索历史欸</string>
+    <string name="search_history">搜索历史</string>
+    <string name="clear_history">清除历史</string>
+    <string name="no_description_nya">暂时没有描述Nya！</string>
+    <string name="songs_count">%d 首音乐</string>
+    <string name="author_prefix">作者：%s</string>
+
+    <!-- 最新音乐 -->
+    <string name="latest_music">最新音乐</string>
+    <string name="loading_latest_music">正在加载最新音乐...</string>
+    <string name="load_failed">加载失败</string>
+    <string name="network_error">网络连接似乎出现了问题</string>
+    <string name="retry">重试</string>
+    <string name="no_latest_music">暂无最新音乐</string>
+    <string name="just_now">刚刚</string>
+    <string name="minutes_ago">%d分钟前</string>
+    <string name="hours_ago">%d小时前</string>
+    <string name="days_ago">%d天前</string>
+    <string name="play_all_failed">播放全部失败</string>
+    <string name="play_failed">播放失败</string>
+
+    <!-- 上传音乐 -->
+    <string name="loading_data">加载中...</string>
+    <string name="get_data_failed">获取数据失败: %s</string>
+    <string name="album_cover">专辑封面</string>
+    <string name="music_note">音乐</string>
+    <string name="empty">空</string>
+
+    <!-- 歌单详情 -->
+    <string name="playlist_cover">歌单封面</string>
+    <string name="no_description_click_to_edit">暂无描述，点击此处修改Nya！</string>
+    <string name="creator">创建者</string>
+    <string name="creator_id">创建者ID</string>
+    <string name="creator_avatar">创建者头像</string>
+    <string name="creator_with_name">创建者: %s</string>
+    <string name="no_songs">暂无歌曲</string>
+    <string name="edit_playlist_description">编辑歌单描述</string>
+    <string name="enter_playlist_description">请输入歌单描述</string>
+    <string name="description_updated">描述已更新</string>
+    <string name="description_update_failed">更新失败: %s</string>
+    <string name="removed_from_playlist">已从歌单中移除</string>
+    <string name="remove_failed">移除失败: %s</string>
+    <string name="load_playlist_failed">加载失败: %s</string>
+    <string name="add_favorite_success">收藏成功</string>
+    <string name="remove_favorite_success">取消收藏成功</string>
+    <string name="operation_failed">操作失败: %s</string>
+
+    <!-- 首页 -->
+    <string name="explore_music_world">探索音乐世界</string>
+    <string name="discover_music_you_like">发现你喜欢的音乐</string>
+    <string name="recommended_playlists">推荐歌单</string>
+    <string name="network_error_msg">网络错误</string>
+    <string name="play_all">播放全部</string>
+    <string name="go_discover">去发现喜欢的音乐吧</string>
+    <string name="try_other_keywords">试试其他关键词</string>
+    <string name="search_box_clicked">搜索框被点击</string>
+    <string name="loading_recommended">开始加载推荐歌单...</string>
+    <string name="loading_ranking">开始加载热门音乐...</string>
+    <string name="loading_latest">开始加载最新音乐...</string>
+    <string name="recommended_loaded">推荐歌单加载成功: %d个</string>
+    <string name="recommended_failed">推荐歌单加载失败: %s</string>
+    <string name="ranking_loaded">热门音乐加载成功: %d首</string>
+    <string name="ranking_failed">热门音乐加载失败: %s</string>
+    <string name="latest_loaded">最新音乐加载成功: %d首</string>
+    <string name="latest_failed">最新音乐加载失败: %s</string>
+    <string name="check_update_failed">检查更新失败</string>
+    <string name="download_update_failed">下载更新失败</string>
+    <string name="download_update_retry">下载失败，请稍后重试</string>
+    <string name="download_update_failed_msg">下载失败：%s</string>
+    <string name="check_update_failed_msg">检查更新失败: %s</string>
+    <string name="recommended_playlists_exception">推荐歌单异常: %s</string>
+    <string name="installing_update">正在安装更新...</string>
+    <string name="update_dialog">发现新版本</string>
+    <string name="version_code">版本号：%d</string>
+
+    <!-- 歌单 -->
+    <string name="no_description">没有描述</string>
+
+    <!-- 通知权限 -->
+    <string name="notification_permission_title">需要通知权限</string>
+    <string name="notification_permission_message">为了在定时关闭时提醒您，\n需要通知权限</string>
+    <string name="authorize">授权</string>
+
+    <!-- 播放器 -->
+    <string name="now_playing">正在播放</string>
+    <string name="cover">封面</string>
+    <string name="create_new">新建</string>
+    <string name="custom">自定义</string>
+    <string name="close">关闭</string>
+    <string name="custom_sleep_timer">自定义定时关闭</string>
+    <string name="hours">小时</string>
+    <string name="minutes">分钟</string>
+    <string name="decrease">减少</string>
+    <string name="increase">增加</string>
+
+    <!-- 关于页面 -->
+    <string name="unknown_version">未知版本</string>
+    <string name="unknown">未知</string>
+    <string name="app_info">应用信息</string>
+    <string name="app_name_label">应用名称</string>
+    <string name="version_number">版本号</string>
+    <string name="version_code_label">版本代码</string>
+    <string name="package_name">包名</string>
+    <string name="organization_info">组织信息</string>
+    <string name="organization_name">组织名称</string>
+    <string name="contact_info">联系方式</string>
+    <string name="tech_stack">技术栈</string>
+    <string name="programming_language">编程语言</string>
+    <string name="ui_framework">UI框架</string>
+    <string name="network_request">网络请求</string>
+    <string name="audio_playback">音频播放</string>
+    <string name="local_database">本地数据库</string>
+    <string name="image_loading">图片加载</string>
+    <string name="copyright_info">版权信息</string>
+    <string name="icp_license">蜀ICP备2025177767号-1</string>
+    <string name="copyright_contact">如有侵权请联系 support@cnmsb.xin</string>
+    <string name="copyright_text">© 2025-2026 Fantasy Network「梦幻网络」</string>
+    <string name="all_rights_reserved">保留所有权利</string>
+
+    <!-- 歌手详情 -->
+    <string name="artist_detail">歌手详情</string>
+    <string name="no_music_found">未找到音乐</string>
+    <string name="songs_count_suffix">%d 首歌曲</string>
+
+    <!-- 缓存管理 -->
+    <string name="no_cache">暂无缓存</string>
+    <string name="cache_hint">播放音乐后会自动缓存</string>
+    <string name="cache_statistics">缓存统计</string>
+    <string name="cached_songs_count">已缓存 %d 首歌曲</string>
+    <string name="cache_size">占用空间：%s</string>
+    <string name="preparing_playlist">正在准备播放列表...</string>
+    <string name="cache_list">缓存列表</string>
+    <string name="clear_all_cache">清空全部</string>
+    <string name="delete_cache">删除缓存</string>
+    <string name="confirm_clear_all_cache">确定要清空所有缓存吗？</string>
+    <string name="clear_all_cache_info">这将删除 %d 首歌曲的缓存</string>
+    <string name="free_space">释放空间：%s</string>
+    <string name="confirm_delete_cache">确定要删除这首歌的缓存吗？</string>
+    <string name="clear">清空</string>
+    <string name="delete">删除</string>
+    <string name="id_label">ID: %s</string>
+
+    <!-- 发现页面 -->
+    <string name="discover">发现</string>
+    <string name="hot_ranking">热门榜单</string>
+    <string name="ranking_number">榜单 %d</string>
+
+    <!-- 排行榜 -->
+    <string name="hot_music">热门音乐</string>
+    <string name="loading_hot_music">正在加载热门音乐...</string>
+    <string name="no_hot_music">暂无热门音乐</string>
+
+    <!-- 播放列表 -->
+    <string name="playback_list">播放列表</string>
+    <string name="playlist_empty">播放列表为空</string>
+
+    <!-- 最近播放 -->
+    <string name="no_play_history">欸？暂时没有播放记录欸</string>
+    <string name="no_related_songs">没有找到相关歌曲喵</string>
+    <string name="search_songs">搜索歌曲</string>
+
+    <!-- 我的歌单 -->
+    <string name="no_playlists_yet">还没有歌单</string>
+    <string name="create_new_playlist">创建新歌单</string>
+    <string name="edit_playlist">编辑歌单</string>
+    <string name="create_playlist_dialog">创建歌单</string>
+    <string name="loading_failed">加载失败: %s</string>
+    <string name="delete_failed_msg">删除失败: %s</string>
+    <string name="my_favorites_label">我喜欢的音乐</string>
+    <string name="loading_data_failed">加载失败: %s</string>
+    <string name="refresh_failed">刷新失败: %s</string>
+
+    <!-- 歌单详情 -->
+    <string name="songs_count_label">%d 首歌曲</string>
+    <string name="edit_description">编辑歌单描述</string>
+    <string name="enter_description">请输入歌单描述</string>
+    <string name="description_updated_success">描述已更新</string>
+    <string name="description_update_failed_msg">更新失败: %s</string>
+    <string name="remove_from_playlist_success">已从歌单中移除</string>
+    <string name="remove_from_playlist_failed">移除失败: %s</string>
+    <string name="load_failed_msg">加载失败: %s</string>
+    <string name="add_to_favorites_success">收藏成功</string>
+    <string name="remove_from_favorites_success">取消收藏成功</string>
+    <string name="operation_failed_msg">操作失败: %s</string>
+    <string name="share_song">分享</string>
+    <string name="favorite_song">收藏</string>
+    <string name="unfavorite_song">取消收藏</string>
+    <string name="creator_info">创建者: %s</string>
+    <string name="creator_id_info">创建者ID: %d</string>
+
+    <!-- 底部导航 -->
+    <string name="nav_home">首页</string>
+    <string name="nav_mine">我的</string>
+    <string name="nav_my_playlists">我的歌单</string>
+
+    <!-- 播放器 -->
+    <string name="player_no_music">暂无播放</string>
+    <string name="player_click_to_play">点击播放音乐</string>
+    <string name="content_description_cover">封面</string>
+    <string name="content_description_pause">暂停</string>
+    <string name="content_description_play">播放</string>
+    <string name="content_description_playlist">播放列表</string>
+
+    <!-- 首页 -->
+    <string name="hot_music_desc">播放次数最高的歌曲</string>
+    <string name="songs_count_short">%d首</string>
+    <string name="play_count">%d次</string>
 </resources>

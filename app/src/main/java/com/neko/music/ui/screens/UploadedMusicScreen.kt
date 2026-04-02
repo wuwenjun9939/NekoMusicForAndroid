@@ -103,7 +103,7 @@ fun UploadedMusicScreen(
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "返回",
+                            contentDescription = stringResource(id = R.string.back),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -163,7 +163,7 @@ fun LoadingView() {
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "加载中...",
+                text = stringResource(id = R.string.loading),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 14.sp
             )
@@ -187,7 +187,7 @@ fun ErrorView(
         ) {
             Icon(
                 imageVector = Icons.Default.Error,
-                contentDescription = "错误",
+                contentDescription = stringResource(id = R.string.error),
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(64.dp)
             )
@@ -205,7 +205,7 @@ fun ErrorView(
                     containerColor = RoseRed
                 )
             ) {
-                Text("重试")
+                Text(stringResource(id = R.string.retry))
             }
         }
     }
@@ -224,7 +224,7 @@ fun EmptyView() {
         ) {
             Icon(
                 imageVector = Icons.Default.UploadFile,
-                contentDescription = "空",
+                contentDescription = stringResource(id = R.string.empty),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
                 modifier = Modifier.size(64.dp)
             )
@@ -327,14 +327,14 @@ fun MusicItem(
                             .data("${baseUrl}/api/music/cover/${music.id}")
                             .crossfade(true)
                             .build(),
-                        contentDescription = "专辑封面",
+                        contentDescription = stringResource(id = R.string.album_cover),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Default.MusicNote,
-                        contentDescription = "音乐",
+                        contentDescription = stringResource(id = R.string.music_note),
                         tint = RoseRed,
                         modifier = Modifier
                             .align(Alignment.Center)
