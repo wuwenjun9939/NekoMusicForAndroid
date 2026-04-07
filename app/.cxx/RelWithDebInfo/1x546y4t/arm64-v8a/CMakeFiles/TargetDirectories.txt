@@ -1,0 +1,3 @@
+/home/wuwenjun/桌面/github/NekoMusicForAndroid/app/.cxx/RelWithDebInfo/1x546y4t/arm64-v8a/CMakeFiles/LrcParser.dir
+/home/wuwenjun/桌面/github/NekoMusicForAndroid/app/.cxx/RelWithDebInfo/1x546y4t/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/wuwenjun/桌面/github/NekoMusicForAndroid/app/.cxx/RelWithDebInfo/1x546y4t/arm64-v8a/CMakeFiles/rebuild_cache.dir
