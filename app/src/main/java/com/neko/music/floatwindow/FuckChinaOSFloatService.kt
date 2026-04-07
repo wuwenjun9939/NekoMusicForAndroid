@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -115,13 +116,15 @@ class FuckChinaOSFloatService : Service() {
         }
 
         // 添加拖动功能（包含点击处理）
+        // FrameLayout 作为触摸事件的处理器
+        val touchSlop = ViewConfiguration.get(this).scaledTouchSlop.toFloat()
+        var startX = 0f
+        var startY = 0f
+        var isDragging = false
+        var viewInitialX = 0
+        var viewInitialY = 0
+
         layoutFloat?.setOnTouchListener(object : View.OnTouchListener {
-            private var startX = 0f
-            private var startY = 0f
-            private var isDragging = false
-            private var viewInitialX = 0
-            private var viewInitialY = 0
-            
             override fun onTouch(view: View, event: MotionEvent): Boolean {
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
@@ -130,31 +133,50 @@ class FuckChinaOSFloatService : Service() {
                         isDragging = false
                         viewInitialX = layoutParams?.x ?: 0
                         viewInitialY = layoutParams?.y ?: 0
-                        return true
+                        // 不拦截，让子视图接收事件
+                        return false
                     }
                     MotionEvent.ACTION_MOVE -> {
                         val dx = event.rawX - startX
                         val dy = event.rawY - startY
                         
-                        // 如果移动距离超过 10 像素，则认为是拖动
-                        if (kotlin.math.abs(dx) > 10 || kotlin.math.abs(dy) > 10) {
-                            isDragging = true
+                        if (kotlin.math.abs(dx) > touchSlop || kotlin.math.abs(dy) > touchSlop) {
+                            if (!isDragging) {
+                                isDragging = true
+                                // 禁用子视图的点击，让父视图拦截事件
+                                val contentLayout = floatView?.findViewById<LinearLayout>(R.id.float_content_layout)
+                                contentLayout?.isClickable = false
+                                for (i in 0 until (contentLayout?.childCount ?: 0)) {
+                                    contentLayout?.getChildAt(i)?.isClickable = false
+                                    contentLayout?.getChildAt(i)?.isFocusable = false
+                                }
+                            }
+                            
                             layoutParams?.x = viewInitialX + dx.toInt()
                             layoutParams?.y = viewInitialY + dy.toInt()
                             windowManager?.updateViewLayout(floatView, layoutParams)
+                            return true
                         }
-                        return true
+                        return false
                     }
-                    MotionEvent.ACTION_UP -> {
-                        // 如果不是拖动，则触发点击事件打开应用
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         if (!isDragging) {
                             android.util.Log.d("FuckChinaOSFloatService", "Layout clicked")
                             val openIntent = Intent(this@FuckChinaOSFloatService, com.neko.music.MainActivity::class.java).apply {
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                             }
                             startActivity(openIntent)
+                        } else {
+                            // 恢复子视图的点击功能
+                            val contentLayout = floatView?.findViewById<LinearLayout>(R.id.float_content_layout)
+                            contentLayout?.isClickable = true
+                            for (i in 0 until (contentLayout?.childCount ?: 0)) {
+                                contentLayout?.getChildAt(i)?.isClickable = true
+                                contentLayout?.getChildAt(i)?.isFocusable = true
+                            }
                         }
-                        return true
+                        isDragging = false
+                        return false
                     }
                 }
                 return false
