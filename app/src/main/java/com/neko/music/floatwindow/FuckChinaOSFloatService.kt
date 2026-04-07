@@ -119,6 +119,8 @@ class FuckChinaOSFloatService : Service() {
             private var startX = 0f
             private var startY = 0f
             private var isDragging = false
+            private var viewInitialX = 0
+            private var viewInitialY = 0
             
             override fun onTouch(view: View, event: MotionEvent): Boolean {
                 when (event.action) {
@@ -126,6 +128,8 @@ class FuckChinaOSFloatService : Service() {
                         startX = event.rawX
                         startY = event.rawY
                         isDragging = false
+                        viewInitialX = layoutParams?.x ?: 0
+                        viewInitialY = layoutParams?.y ?: 0
                         return true
                     }
                     MotionEvent.ACTION_MOVE -> {
@@ -135,13 +139,8 @@ class FuckChinaOSFloatService : Service() {
                         // 如果移动距离超过 10 像素，则认为是拖动
                         if (kotlin.math.abs(dx) > 10 || kotlin.math.abs(dy) > 10) {
                             isDragging = true
-                            initialX = layoutParams?.x ?: 0
-                            initialY = layoutParams?.y ?: 0
-                            initialTouchX = startX
-                            initialTouchY = startY
-                            
-                            layoutParams?.x = initialX + (event.rawX - initialTouchX).toInt()
-                            layoutParams?.y = initialY + (event.rawY - initialTouchY).toInt()
+                            layoutParams?.x = viewInitialX + dx.toInt()
+                            layoutParams?.y = viewInitialY + dy.toInt()
                             windowManager?.updateViewLayout(floatView, layoutParams)
                         }
                         return true
