@@ -57,7 +57,8 @@ private const val baseUrl = "https://music.cnmsb.xin"
 fun UploadedMusicScreen(
     onBackClick: () -> Unit = {},
     onMusicClick: (UploadedMusic) -> Unit = {},
-    token: String? = null
+    token: String? = null,
+    userId: Int = -1
 ) {
     val context = LocalContext.current
     val scope = androidx.compose.runtime.rememberCoroutineScope()
@@ -194,7 +195,8 @@ fun UploadedMusicScreen(
                     }
                 }
             },
-            token = token
+            token = token,
+            userId = userId
         )
     }
 }
@@ -451,7 +453,8 @@ private fun formatDuration(seconds: Int): String {
 fun UploadMusicDialog(
     onDismiss: () -> Unit,
     onUploadSuccess: () -> Unit,
-    token: String?
+    token: String?,
+    userId: Int = -1
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -944,7 +947,7 @@ fun UploadMusicDialog(
                                     language = languageCode,
                                     tags = tags,
                                     duration = durationSeconds,  // 添加 duration 参数
-                                    uploadUserId = 0,  // 添加 uploadUserId 参数
+                                    uploadUserId = userId,  // 使用真实的用户 ID
                                     lyricsFile = lyricsBytes,
                                     coverImage = coverBytes
                                 )

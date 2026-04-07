@@ -503,7 +503,8 @@ fun MainScreen() {
                         val encodedArtist = java.net.URLEncoder.encode(music.artist, "UTF-8")
                         navController.navigate("player/${music.id}/$encodedTitle/$encodedArtist")
                     },
-                    token = tokenManager.getToken()
+                    token = tokenManager.getToken(),
+                    userId = tokenManager.getUserId()
                 )
             }
             composable(

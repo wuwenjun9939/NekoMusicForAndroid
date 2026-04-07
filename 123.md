@@ -4,7 +4,7 @@ English Documentation: [English API doc.md](README-EN.md)
 
 ### 使用本 API 需遵守本项目 LICENSE 协议，必须开源并保留 Neko云音乐 署名及源码链接！
 
-#### 更新时间 2026年4月2日
+#### 更新时间 2026年4月7日
 ## 概述
 
 Neko云音乐提供完整的 RESTful API，支持音乐搜索、播放、用户认证、收藏等功能。所有 API 都基于 HTTP/HTTPS 协议，使用 JSON 格式进行数据交换。
@@ -402,7 +402,7 @@ Content-Type: multipart/form-data
 - `album`: 专辑名称（可选）
 - `tags`: 标签（可选）
 - `duration`: 音乐时长，单位秒（必填）
-- `uploadUserId`: 上传用户ID（通常传0）
+- `uploadUserId`: 上传用户ID（必填）
 - `musicFile`: 音乐文件（必填，multipart/form-data）
   - 支持格式：MP3、FLAC、WAV
 - `coverFile`: 封面图片文件（可选，multipart/form-data）
