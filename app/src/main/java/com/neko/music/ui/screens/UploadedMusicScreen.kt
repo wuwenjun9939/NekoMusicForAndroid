@@ -923,10 +923,10 @@ fun UploadMusicDialog(
                             val languageCode = languageOptions.find { it.first == language }?.second ?: ""
                             
                             // 模拟进度更新 - 上传中阶段
-                            launch {
-                                while (isUploading && uploadProgress < 90f) {
+                            val uploadJob = launch {
+                                while (isUploading && uploadProgress < 95f) {
                                     kotlinx.coroutines.delay(100)
-                                    uploadProgress = (uploadProgress + 5f).coerceAtMost(90f)
+                                    uploadProgress = (uploadProgress + 5f).coerceAtMost(95f)
                                 }
                             }
                             
@@ -947,6 +947,8 @@ fun UploadMusicDialog(
                                     coverImage = coverBytes
                                 )
                                 
+                                // API调用完成后，等待模拟进度完成到95%，然后设置为100%
+                                uploadJob.join()
                                 uploadProgress = 100f
                                 
                                 if (response.success) {

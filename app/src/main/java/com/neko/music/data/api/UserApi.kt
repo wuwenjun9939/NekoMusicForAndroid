@@ -27,9 +27,9 @@ class UserApi(private val token: String? = null) {
             })
         }
         install(io.ktor.client.plugins.HttpTimeout) {
-            requestTimeoutMillis = 15_000
-            connectTimeoutMillis = 15_000
-            socketTimeoutMillis = 15_000
+            requestTimeoutMillis = 600_000  // 10分钟
+            connectTimeoutMillis = 600_000  // 10分钟
+            socketTimeoutMillis = 600_000  // 10分钟
         }
     }
 

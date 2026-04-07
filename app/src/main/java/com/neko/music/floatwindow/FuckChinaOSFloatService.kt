@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
@@ -36,6 +37,12 @@ class FuckChinaOSFloatService : Service() {
     private val serviceScope = CoroutineScope(Dispatchers.Main + Job())
     private var updateJob: Job? = null
     private var layoutParams: WindowManager.LayoutParams? = null
+    
+    // 拖动相关变量
+    private var initialX = 0
+    private var initialY = 0
+    private var initialTouchX = 0f
+    private var initialTouchY = 0f
 
     companion object {
         const val ACTION_SHOW = "com.neko.music.action.SHOW_FLOAT"
@@ -101,14 +108,53 @@ class FuckChinaOSFloatService : Service() {
             MusicPlayerManager.getInstance(this).next()
         }
 
-        // 点击整个悬浮窗打开应用
-        layoutFloat?.setOnClickListener {
-            android.util.Log.d("FuckChinaOSFloatService", "Layout clicked")
-            val openIntent = Intent(this, com.neko.music.MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        // 添加拖动功能（包含点击处理）
+        layoutFloat?.setOnTouchListener(object : View.OnTouchListener {
+            private var startX = 0f
+            private var startY = 0f
+            private var isDragging = false
+            
+            override fun onTouch(view: View, event: MotionEvent): Boolean {
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        startX = event.rawX
+                        startY = event.rawY
+                        isDragging = false
+                        return true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        val dx = event.rawX - startX
+                        val dy = event.rawY - startY
+                        
+                        // 如果移动距离超过 10 像素，则认为是拖动
+                        if (kotlin.math.abs(dx) > 10 || kotlin.math.abs(dy) > 10) {
+                            isDragging = true
+                            initialX = layoutParams?.x ?: 0
+                            initialY = layoutParams?.y ?: 0
+                            initialTouchX = startX
+                            initialTouchY = startY
+                            
+                            layoutParams?.x = initialX + (event.rawX - initialTouchX).toInt()
+                            layoutParams?.y = initialY + (event.rawY - initialTouchY).toInt()
+                            windowManager?.updateViewLayout(floatView, layoutParams)
+                        }
+                        return true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        // 如果不是拖动，则触发点击事件打开应用
+                        if (!isDragging) {
+                            android.util.Log.d("FuckChinaOSFloatService", "Layout clicked")
+                            val openIntent = Intent(this@FuckChinaOSFloatService, com.neko.music.MainActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            }
+                            startActivity(openIntent)
+                        }
+                        return true
+                    }
+                }
+                return false
             }
-            startActivity(openIntent)
-        }
+        })
         
         // 确保按钮可以点击
         btnPlayPause?.isClickable = true
@@ -136,7 +182,8 @@ class FuckChinaOSFloatService : Service() {
                 PixelFormat.TRANSLUCENT
             )
             
-            layoutParams?.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+            layoutParams?.gravity = Gravity.TOP or Gravity.START
+            layoutParams?.x = 0 // 初始水平位置
             layoutParams?.y = 80 // 距离顶部80像素
             
             // 直接显示
