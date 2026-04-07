@@ -6,3 +6,6 @@ build
 .kotlin
 app/build
 app/release
+
+#c++ JNI
+app/.cxx
