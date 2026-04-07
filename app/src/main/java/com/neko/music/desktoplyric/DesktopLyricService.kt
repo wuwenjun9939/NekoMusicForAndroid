@@ -13,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import com.neko.music.R
+import com.neko.music.data.api.MusicApi
 import com.neko.music.service.MusicPlayerManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +50,7 @@ class DesktopLyricService : Service() {
     private var isDragging = false
     private var viewInitialX = 0
     private var viewInitialY = 0
-    private val touchSlop = android.view.ViewConfiguration.get(this).scaledTouchSlop.toFloat()
+    private var touchSlop = 0f
 
     companion object {
         const val ACTION_SHOW = "com.neko.music.action.SHOW_DESKTOP_LYRIC"
@@ -66,6 +67,8 @@ class DesktopLyricService : Service() {
         super.onCreate()
         android.util.Log.d("DesktopLyricService", "Service onCreate")
         instance = this
+        // 在onCreate中初始化touchSlop，此时Context已经准备好
+        touchSlop = android.view.ViewConfiguration.get(this).scaledTouchSlop.toFloat()
         createLyricView()
         showLyricView()
         startLyricUpdate()
@@ -100,27 +103,22 @@ class DesktopLyricService : Service() {
                         isDragging = false
                         viewInitialX = layoutParams?.x ?: 0
                         viewInitialY = layoutParams?.y ?: 0
-                        return false
+                        return true
                     }
                     MotionEvent.ACTION_MOVE -> {
                         val dx = event.rawX - startX
                         val dy = event.rawY - startY
                         
                         if (kotlin.math.abs(dx) > touchSlop || kotlin.math.abs(dy) > touchSlop) {
-                            if (!isDragging) {
-                                isDragging = true
-                            }
-                            
+                            isDragging = true
                             layoutParams?.x = viewInitialX + dx.toInt()
                             layoutParams?.y = viewInitialY + dy.toInt()
                             windowManager?.updateViewLayout(lyricView, layoutParams)
-                            return true
                         }
-                        return false
+                        return true
                     }
-                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                        isDragging = false
-                        return false
+                    MotionEvent.ACTION_UP -> {
+                        return true
                     }
                 }
                 return false
@@ -151,6 +149,8 @@ class DesktopLyricService : Service() {
             layoutParams?.y = 100 // 距离顶部100像素
             
             lyricView?.alpha = 1f
+            lyricView?.scaleX = 1f
+            lyricView?.scaleY = 1f
             
             windowManager?.addView(lyricView, layoutParams)
             isViewAdded = true
@@ -166,7 +166,7 @@ class DesktopLyricService : Service() {
         updateJob = serviceScope.launch {
             while (isActive) {
                 updateLyricView()
-                delay(100) // 每0.1秒更新一次
+                delay(500) // 每0.5秒更新一次
             }
         }
     }
@@ -188,49 +188,65 @@ class DesktopLyricService : Service() {
         val tvLyric = lyricView?.findViewById<TextView>(R.id.desktop_lyric_text)
         val tvTranslation = lyricView?.findViewById<TextView>(R.id.desktop_lyric_translation)
         
-        // 获取当前播放进度和歌词
-        currentProgress = playerManager.currentPosition.value
-        val musicId = playerManager.currentMusicId.value
+        // 获取当前音乐ID
+        val musicId = playerManager.currentMusicId.value ?: -1
         
-        // 如果音乐改变，重新加载歌词
-        if (musicId != null && musicId != currentMusicId) {
+        // 如果音乐ID变化，重新加载歌词
+        if (musicId != currentMusicId) {
             currentMusicId = musicId
             serviceScope.launch {
                 loadLyrics(musicId)
             }
         }
         
-        // 找到当前应该显示的歌词行
-        val currentIndex = currentLyrics.indexOfLast { it.time <= currentProgress / 1000f }
+        // 获取当前播放进度
+        currentProgress = playerManager.currentPosition.value
         
-        if (currentIndex >= 0 && currentIndex < currentLyrics.size) {
-            val currentLine = currentLyrics[currentIndex]
-            tvLyric?.text = currentLine.text
-            tvTranslation?.text = currentLine.translation ?: ""
-            tvTranslation?.visibility = if (currentLine.translation != null) View.VISIBLE else View.GONE
+        // 更新歌词显示
+        if (currentLyrics.isNotEmpty()) {
+            val currentLine = currentLyrics.lastOrNull { it.time <= currentProgress / 1000f }
+            
+            if (currentLine != null) {
+                tvLyric?.text = currentLine.text
+                tvTranslation?.text = currentLine.translation ?: ""
+            } else {
+                tvLyric?.text = "暂无歌词"
+                tvTranslation?.text = ""
+            }
         } else {
-            tvLyric?.text = ""
+            tvLyric?.text = "暂无歌词"
             tvTranslation?.text = ""
-            tvTranslation?.visibility = View.GONE
         }
     }
 
     private suspend fun loadLyrics(musicId: Int) {
+        if (musicId <= 0) {
+            currentLyrics = emptyList()
+            return
+        }
+        
         try {
-            val musicApi = com.neko.music.data.api.MusicApi(this)
-            val result = musicApi.getMusicLyrics(
-                com.neko.music.data.model.Music(
-                    id = musicId,
-                    title = "",
-                    artist = "",
-                    album = "",
-                    duration = 0
-                )
+            val musicApi = MusicApi(this)
+            
+            // 从MusicPlayerManager获取当前音乐信息
+            val playerManager = MusicPlayerManager.getInstance(this)
+            
+            // 构建一个简单的Music对象
+            val currentMusic = com.neko.music.data.model.Music(
+                id = musicId,
+                title = playerManager.currentMusicTitle.value ?: "",
+                artist = playerManager.currentMusicArtist.value ?: "",
+                album = "",
+                duration = 0,
+                filePath = playerManager.currentMusicUrl.value,
+                coverFilePath = playerManager.currentMusicCover.value
             )
+            
+            // 获取歌词
+            val result = musicApi.getMusicLyrics(currentMusic)
             result.fold(
                 onSuccess = { lyricsText ->
                     currentLyrics = parseLrcLyrics(lyricsText)
-                    android.util.Log.d("DesktopLyricService", "Lyrics loaded: ${currentLyrics.size} lines")
                 },
                 onFailure = { error ->
                     android.util.Log.e("DesktopLyricService", "Failed to load lyrics", error)
@@ -243,42 +259,46 @@ class DesktopLyricService : Service() {
         }
     }
 
-    // 解析 LRC 格式歌词（支持双语）
     private fun parseLrcLyrics(lrcText: String): List<LrcLine> {
         val lines = lrcText.lines()
         val result = mutableListOf<LrcLine>()
-
+        
         for (i in lines.indices) {
             val line = lines[i]
-            // 匹配时间戳格式 [mm:ss.xx]
-            val timePattern = Regex("\\[(\\d{2}):(\\d{2})\\.(\\d{2})\\]")
-            val timeMatch = timePattern.find(line)
-
-            if (timeMatch != null) {
-                val minutes = timeMatch.groupValues[1].toInt()
-                val seconds = timeMatch.groupValues[2].toInt()
-                val centiseconds = timeMatch.groupValues[3].toInt()
+            // 解析时间戳 [mm:ss.xx]
+            val timeRegex = Regex("\\[(\\d{2}):(\\d{2})\\.(\\d{2})\\]")
+            val match = timeRegex.find(line)
+            
+            if (match != null) {
+                val minutes = match.groupValues[1].toInt()
+                val seconds = match.groupValues[2].toInt()
+                val centiseconds = match.groupValues[3].toInt()
                 val time = minutes * 60 + seconds + centiseconds / 100f
-
-                // 提取歌词文本（移除时间标签）
-                var text = line.substring(timeMatch.range.last + 1).trim()
+                
+                // 提取歌词文本
+                var text = line.substring(match.range.last + 1).trim()
+                
+                // 检查是否有翻译（下一行可能包含翻译）
                 var translation: String? = null
-
-                // 检查下一行是否是翻译
                 if (i + 1 < lines.size) {
                     val nextLine = lines[i + 1].trim()
-                    if (nextLine.startsWith("{\" ") && nextLine.endsWith("}\"")) {
-                        // 提取翻译内容
-                        val jsonContent = nextLine.substring(3, nextLine.length - 2).trim()
-                        // 移除外层引号和转义引号
-                        translation = jsonContent.removeSurrounding("\"").replace("\\\"", "\"")
+                    // 翻译行通常以 { } 包裹
+                    if (nextLine.startsWith("{") && nextLine.endsWith("}")) {
+                        try {
+                            val jsonContent = nextLine.substring(1, nextLine.length - 1)
+                            // 尝试解析JSON
+                            // 这里简化处理，直接作为翻译
+                            translation = jsonContent
+                        } catch (e: Exception) {
+                            translation = null
+                        }
                     }
                 }
-
+                
                 result.add(LrcLine(time, text, translation))
             }
         }
-
+        
         return result
     }
 
