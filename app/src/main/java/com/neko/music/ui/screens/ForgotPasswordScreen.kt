@@ -4,8 +4,10 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.filled.ArrowBack
@@ -20,12 +22,10 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.neko.music.R
@@ -33,17 +33,17 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onBackClick: () -> Unit,
-    onRegisterClick: () -> Unit = {},
-    onForgotPasswordClick: () -> Unit = {}
+fun ForgotPasswordScreen(
+    onResetSuccess: () -> Unit,
+    onBackClick: () -> Unit
 ) {
-
-    val context = LocalContext.current
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var code by remember { mutableStateOf("") }
+    var newPassword by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
+    var isSendingCode by remember { mutableStateOf(false) }
+    var countdown by remember { mutableIntStateOf(0) }
     var errorMessage by remember { mutableStateOf("") }
 
     // 动画状态
@@ -64,12 +64,25 @@ fun LoginScreen(
     }
 
     val scope = rememberCoroutineScope()
-    val tokenManager = com.neko.music.data.manager.TokenManager(context)
     val userApi = com.neko.music.data.api.UserApi()
 
     // Preload string resources for non-Composable contexts
-    val pleaseEnterEmailAndPassword = stringResource(id = R.string.please_enter_email_and_password)
-    val loginFailed = stringResource(id = R.string.login_failed)
+    val pleaseEnterEmail = stringResource(id = R.string.please_enter_email_for_reset)
+    val pleaseEnterCode = stringResource(id = R.string.please_enter_code_for_reset)
+    val pleaseEnterNewPassword = stringResource(id = R.string.please_enter_new_password)
+    val newPasswordLengthError = stringResource(id = R.string.new_password_length_error_reset)
+    val passwordMismatch = stringResource(id = R.string.password_mismatch)
+    val emailFormatError = stringResource(id = R.string.email_format_error)
+    val resetPasswordFailed = stringResource(id = R.string.reset_password_failed)
+    val sendResetCodeFailed = stringResource(id = R.string.send_reset_code_failed)
+
+    // 倒计时
+    LaunchedEffect(countdown) {
+        if (countdown > 0) {
+            kotlinx.coroutines.delay(1000)
+            countdown--
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -114,6 +127,7 @@ fun LoginScreen(
                 .fillMaxSize()
                 .padding(horizontal = 32.dp)
                 .padding(top = 80.dp)
+                .verticalScroll(rememberScrollState())
                 .scale(scale)
                 .alpha(alpha),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -124,14 +138,14 @@ fun LoginScreen(
 
             // 标题
             Text(
-                text = stringResource(id = R.string.app_title),
+                text = stringResource(id = R.string.forgot_password),
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
 
             Text(
-                text = stringResource(id = R.string.welcome_back),
+                text = stringResource(id = R.string.enter_email_to_reset),
                 fontSize = 16.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(top = 8.dp)
@@ -139,7 +153,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // 用户名输入框
+            // 邮箱输入框
             AnimatedVisibility(
                 visible = isVisible,
                 enter = slideInVertically(
@@ -147,18 +161,90 @@ fun LoginScreen(
                     animationSpec = tween(durationMillis = 150, delayMillis = 90)
                                         ) + fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 90))            ) {
                 OutlinedTextField(
-                    value = username,
+                    value = email,
                     onValueChange = {
-                        username = it
+                        email = it
                         errorMessage = ""
                     },
                     label = { Text(stringResource(id = R.string.email)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Email,
-                            contentDescription = stringResource(id = R.string.username),
+                            contentDescription = stringResource(id = R.string.email),
                             tint = Color.Gray
                         )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFE94560),
+                        unfocusedBorderColor = Color.Gray,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        unfocusedContainerColor = Color(0xFF1A1A2E)
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 验证码输入框
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 150, delayMillis = 105)
+                                        ) + fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 105))            ) {
+                OutlinedTextField(
+                    value = code,
+                    onValueChange = {
+                        code = it
+                        errorMessage = ""
+                    },
+                    label = { Text(stringResource(id = R.string.verification_code)) },
+                    trailingIcon = {
+                        TextButton(
+                            onClick = {
+                                if (email.isEmpty()) {
+                                    errorMessage = pleaseEnterEmail
+                                    return@TextButton
+                                }
+                                if (countdown > 0) return@TextButton
+
+                                isSendingCode = true
+                                scope.launch {
+                                    try {
+                                        val response = userApi.sendResetCode(email)
+                                        isSendingCode = false
+
+                                        if (response.success) {
+                                            countdown = 60
+                                        } else {
+                                            errorMessage = response.message
+                                        }
+                                    } catch (e: Exception) {
+                                        isSendingCode = false
+                                        errorMessage = sendResetCodeFailed.format(e.message ?: "")
+                                    }
+                                }
+                            },
+                            enabled = !isSendingCode && countdown == 0
+                        ) {
+                            if (isSendingCode) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(16.dp),
+                                    color = Color(0xFFE94560)
+                                )
+                            } else {
+                                Text(
+                                    text = if (countdown > 0) stringResource(id = R.string.retry_after_seconds, countdown) else stringResource(id = R.string.send_reset_code),
+                                    color = if (countdown > 0) Color.Gray else Color(0xFFE94560),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -175,7 +261,7 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 密码输入框
+            // 新密码输入框
             AnimatedVisibility(
                 visible = isVisible,
                 enter = slideInVertically(
@@ -183,16 +269,54 @@ fun LoginScreen(
                     animationSpec = tween(durationMillis = 150, delayMillis = 120)
                                         ) + fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 120))            ) {
                 OutlinedTextField(
-                    value = password,
+                    value = newPassword,
                     onValueChange = {
-                        password = it
+                        newPassword = it
                         errorMessage = ""
                     },
-                    label = { Text(stringResource(id = R.string.password)) },
+                    label = { Text(stringResource(id = R.string.new_password)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = stringResource(id = R.string.password),
+                            contentDescription = stringResource(id = R.string.new_password),
+                            tint = Color.Gray
+                        )
+                    },
+                    visualTransformation = PasswordVisualTransformation(),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color(0xFFE94560),
+                        unfocusedBorderColor = Color.Gray,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        unfocusedContainerColor = Color(0xFF1A1A2E)
+                    ),
+                    shape = RoundedCornerShape(12.dp),
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 确认新密码输入框
+            AnimatedVisibility(
+                visible = isVisible,
+                enter = slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 150, delayMillis = 135)
+                                        ) + fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 135))            ) {
+                OutlinedTextField(
+                    value = confirmPassword,
+                    onValueChange = {
+                        confirmPassword = it
+                        errorMessage = ""
+                    },
+                    label = { Text(stringResource(id = R.string.confirm_new_password)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = stringResource(id = R.string.confirm_new_password),
                             tint = Color.Gray
                         )
                     },
@@ -224,30 +348,9 @@ fun LoginScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // 忘记密码链接
-            AnimatedVisibility(
-                visible = isVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 135))
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = onForgotPasswordClick) {
-                        Text(
-                            text = stringResource(id = R.string.forgot_password) + "?",
-                            color = Color(0xFFE94560),
-                            fontSize = 14.sp
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 登录按钮
+            // 重置密码按钮
             AnimatedVisibility(
                 visible = isVisible,
                 enter = slideInVertically(
@@ -256,32 +359,51 @@ fun LoginScreen(
                                         ) + fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 150))            ) {
                 Button(
                     onClick = {
-                        if (username.isEmpty() || password.isEmpty()) {
-                            errorMessage = pleaseEnterEmailAndPassword
+                        if (email.isEmpty()) {
+                            errorMessage = pleaseEnterEmail
+                            return@Button
+                        }
+
+                        if (code.isEmpty()) {
+                            errorMessage = pleaseEnterCode
+                            return@Button
+                        }
+
+                        if (newPassword.isEmpty()) {
+                            errorMessage = pleaseEnterNewPassword
+                            return@Button
+                        }
+
+                        if (newPassword.length < 6 || newPassword.length > 30) {
+                            errorMessage = newPasswordLengthError
+                            return@Button
+                        }
+
+                        if (newPassword != confirmPassword) {
+                            errorMessage = passwordMismatch
+                            return@Button
+                        }
+
+                        // 简单的邮箱格式验证
+                        if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"))) {
+                            errorMessage = emailFormatError
                             return@Button
                         }
 
                         isLoading = true
                         scope.launch {
                             try {
-                                val response = userApi.login(username, password)
+                                val response = userApi.resetPassword(email, code, newPassword)
                                 isLoading = false
 
-                                if (response.success && response.data != null) {
-                                    // 保存 token 和用户信息
-                                    tokenManager.saveToken(
-                                        token = response.data.token,
-                                        userId = response.data.user.id,
-                                        username = response.data.user.username,
-                                        email = response.data.user.email
-                                    )
-                                    onLoginSuccess()
+                                if (response.success) {
+                                    onResetSuccess()
                                 } else {
                                     errorMessage = response.message
                                 }
                             } catch (e: Exception) {
                                 isLoading = false
-                                errorMessage = loginFailed.format(e.message ?: "")
+                                errorMessage = resetPasswordFailed.format(e.message ?: "")
                             }
                         }
                     },
@@ -301,36 +423,8 @@ fun LoginScreen(
                         )
                     } else {
                         Text(
-                            text = stringResource(id = R.string.login),
+                            text = stringResource(id = R.string.reset_password_now),
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 注册提示
-            AnimatedVisibility(
-                visible = isVisible,
-                enter = fadeIn(animationSpec = tween(durationMillis = 150, delayMillis = 180))
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.no_account_yet),
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    TextButton(onClick = onRegisterClick) {
-                        Text(
-                            text = stringResource(id = R.string.register_now),
-                            color = Color(0xFFE94560),
-                            fontSize = 14.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
