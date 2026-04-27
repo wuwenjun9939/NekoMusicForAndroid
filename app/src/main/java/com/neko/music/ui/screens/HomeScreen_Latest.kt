@@ -74,17 +74,24 @@ fun LatestMusicCard(
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // 封面 + 文字融合容器
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = 8.dp,
+                    spotColor = SkyBlue.copy(alpha = 0.3f),
+                    ambientColor = Color.Gray.copy(alpha = 0.15f),
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .clip(RoundedCornerShape(20.dp))
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
         // 封面
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(20.dp))
-                .shadow(
-                    elevation = 8.dp,
-                    spotColor = SkyBlue.copy(alpha = 0.3f),
-                    ambientColor = Color.Gray.copy(alpha = 0.15f)
-                )
         ) {
             // 背景渐变
             Box(
@@ -200,12 +207,13 @@ fun LatestMusicCard(
             }
         }
 
-        // 文字信息
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 2.dp)
-        ) {
+            // 文字信息 - 融合背景
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF1A1A2E).copy(alpha = 0.88f))
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
+            ) {
             // 标题
             Text(
                 text = latestMusicTitle,
@@ -243,5 +251,7 @@ fun LatestMusicCard(
                     )
                 )
             }
+            }
+        }
     }
 }
