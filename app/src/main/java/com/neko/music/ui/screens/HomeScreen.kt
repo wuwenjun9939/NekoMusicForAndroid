@@ -1384,12 +1384,13 @@ fun PlaylistCard(
                 )
                 .clip(RoundedCornerShape(20.dp))
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth().padding(6.dp)) {
         // 封面
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
+                .clip(RoundedCornerShape(14.dp))
         ) {
             // 背景渐变
             Box(
@@ -1492,6 +1493,7 @@ fun PlaylistCard(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(bottomStart = 14.dp, bottomEnd = 14.dp))
                     .background(Color(0xFF1A1A2E).copy(alpha = 0.88f))
                     .padding(horizontal = 12.dp, vertical = 10.dp)
             ) {
@@ -1582,12 +1584,13 @@ fun RankingMusicCard(
                 )
                 .clip(RoundedCornerShape(20.dp))
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth().padding(6.dp)) {
         // 封面
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
+                .clip(RoundedCornerShape(14.dp))
         ) {
             // 背景渐变
             Box(
@@ -1707,6 +1710,7 @@ fun RankingMusicCard(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(bottomStart = 14.dp, bottomEnd = 14.dp))
                     .background(Color(0xFF1A1A2E).copy(alpha = 0.88f))
                     .padding(horizontal = 12.dp, vertical = 10.dp)
             ) {
