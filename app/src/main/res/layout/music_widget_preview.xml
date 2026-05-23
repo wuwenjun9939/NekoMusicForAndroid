@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 尽量用系统主题属性 + 框架 Material 横条；不确定进度时由 Provider 打开 indeterminate（系统流动动画） -->
+<!-- 小部件选择器预览（API 31+ previewLayout）；控件类型与 id 须与 music_widget 一致 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:id="@+id/widget_song_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Neko云音乐"
+            android:text="@string/widget_preview_title"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold"
@@ -31,7 +31,7 @@
             android:id="@+id/widget_artist_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="暂无播放"
+            android:text="@string/widget_preview_artist"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary"
             android:maxLines="1"
@@ -51,7 +51,7 @@
             android:id="@+id/widget_current_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0:00"
+            android:text="1:23"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary"
             android:layout_marginEnd="8dp" />
@@ -64,13 +64,13 @@
             android:layout_weight="1"
             android:minHeight="8dp"
             android:max="100"
-            android:progress="0" />
+            android:progress="42" />
 
         <TextView
             android:id="@+id/widget_total_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0:00"
+            android:text="4:56"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary"
             android:layout_marginStart="8dp" />
